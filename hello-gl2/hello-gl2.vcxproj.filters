@@ -15,6 +15,9 @@
     <ClCompile Include="CppSource\gl_code.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\asteroid.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -38,5 +41,10 @@
     <None Include="AndroidApk\project.properties">
       <Filter>AndroidApk</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CppSource\asteroid.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

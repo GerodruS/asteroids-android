@@ -28,6 +28,8 @@
 #include <vector>
 #include <string>
 
+#include "asteroid.h"
+
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
@@ -50,7 +52,10 @@ static const char gVertexShader[] =
     uniform float x_zero;\n\
     uniform float y_zero;\n\
     attribute vec4 vPosition;\n\
+    attribute vec4 a_color;\n\
+    varying vec4 v_color;\n\
     void main() {\n\
+        v_color = a_color; \n\
         mat3 m_projection = mat3(     \n\
             vec3(ratio, 0.0, 0.0),    \n\
             vec3(  0.0, 1.0, 0.0),    \n\
@@ -65,24 +70,12 @@ static const char gVertexShader[] =
         gl_Position = vec4(m_projection * m_scale * (vPosition.xyz + m_move), 1.0); \n\
      }\n";
 
-/*
-static const char gVertexShader[] =
-   "attribute vec4 vPosition;          \n\
-    void main() {                      \n\
-        const mat3 projection = mat3(  \n\
-            vec3(1.0 / 1.0, 0.0, 0.0), \n\
-            vec3(0.0, 1.0, 0.0),       \n\
-            vec3(0.0, 0.0, 1.0)        \n\
-        );                             \n\
-        gl_Position = vec4(projection * position.xyz, 1.0); \n\
-        gl_Position = vPosition; \n\
-    }\n";
-*/
-
 static const char gFragmentShader[] = 
     "precision mediump float;\n"
+    "varying vec4 v_color;\n"
     "void main() {\n"
-    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "  gl_FragColor = v_color;\n"
+    //"  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
     "}\n";
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
@@ -162,7 +155,14 @@ GLuint xzeroID;
 GLfloat xzeroValue;
 GLuint yzeroID;
 GLfloat yzeroValue;
+GLuint colorID;
+GLfloat colorValue[] = {
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f, 
+    1.0f, 0.0f, 0.0f, 1.0f
+};
 
+const GLfloat fieldSize = 1000.0f;
 /*
 const struct MyScreen
 {
@@ -171,6 +171,13 @@ const struct MyScreen
 
 } myScreen;
 */
+
+GLfloat gTriangleVertices[] = {
+    0.0f, 0.0f,
+    10.0f, 790.0f,
+    1790.0f, 10.0f };
+
+std::vector<Asteroid> asteroids;
 
 bool setupGraphics(int w, int h)
 {
@@ -196,24 +203,32 @@ bool setupGraphics(int w, int h)
     ratioID = glGetUniformLocation(gProgram, "ratio");
     checkGlError("glGetAttribLocation");
 
-    scaleXValue = 2.0f / h;
+    scaleXValue = 2.0f / fieldSize;
     scaleXID = glGetUniformLocation(gProgram, "scaleX");
     checkGlError("glGetAttribLocation");
 
-    scaleYValue = 2.0f / h;
+    scaleYValue = 2.0f / fieldSize;
     scaleYID = glGetUniformLocation(gProgram, "scaleY");
     checkGlError("glGetAttribLocation");
 
-    xzeroValue = w / 2.0f;
+    xzeroValue = fieldSize / 2.0f;
     xzeroID = glGetUniformLocation(gProgram, "x_zero");
     checkGlError("glGetAttribLocation");
 
-    yzeroValue = h / 2.0f;
+    yzeroValue = fieldSize / 2.0f;
     yzeroID = glGetUniformLocation(gProgram, "y_zero");
     checkGlError("glGetAttribLocation");
 
+    colorID = glGetAttribLocation(gProgram, "a_color");
+    checkGlError("glGetAttribLocation");
+
+    gTriangleVertices[3] = fieldSize;
+    gTriangleVertices[4] = fieldSize;
+
     //float ratio = (float)w / (float)h;
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+
+    asteroids.resize(1);
 
     return true;
 }
@@ -222,13 +237,108 @@ const GLfloat gTriangleVertices2[] = {  0.5f,  0.5f,
                                       -0.5f, -0.5f,
                                       0.5f, -0.5f };
 
-const GLfloat gTriangleVertices[] = {
- 200.0f, 200.0f,
- 0.0f, 1200.0f,
- 800.0f, 0.0f };
+std::vector<GLfloat> points(6);
+
+void drawAsteroid(Asteroid& asteroid)
+{
+    int size = asteroid.points.size();
+    GLsizei count = size / 2 - 1;
+
+    points[4] = asteroid.points[size - 2];
+    points[5] = asteroid.points[size - 1];
+
+    for (int i = 0; i < count; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
+            points[j] = asteroid.points[(j + i * 2) % (size - 2)];
+        }
+
+        switch (i)
+        {
+        case 0:
+            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        case 1:
+            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        case 2:
+            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        case 3:
+            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        case 4:
+            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        case 5:
+            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        default:
+            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
+            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
+            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
+            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
+            break;
+        }
+        
+        GLfloat* pnt = &(points[0]);
+        glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, pnt);
+        checkGlError("glVertexAttribPointer");
+        glEnableVertexAttribArray(gvPositionHandle);
+        checkGlError("glEnableVertexAttribArray");
+
+        glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, colorValue);
+        checkGlError("glVertexAttribPointer");
+        glEnableVertexAttribArray(colorID);
+        checkGlError("glEnableVertexAttribArray");
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        checkGlError("glDrawArrays");
+
+        glDisableVertexAttribArray(gvPositionHandle);
+        glDisableVertexAttribArray(colorID);
+    }
+    /*
+    GLfloat* pnt = &(asteroid.points[0]);
+    GLsizei count = asteroid.points.size() - 1;
+
+    for (int i = 0; i < asteroid.points.size() - 2; ++i)
+    {
+        points[i] = asteroid.points[i];
+        points[i + 1] = asteroid.points[i + 1];
+    }
+
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, pnt);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvPositionHandle);
+    checkGlError("glEnableVertexAttribArray");
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    checkGlError("glDrawArrays");
+    */
+}
 
 void renderFrame()
 {
+
     static float grey;
     grey += 0.01f;
     if (grey > 1.0f) {
@@ -258,7 +368,7 @@ void renderFrame()
 
     glUniform1f(yzeroID, yzeroValue);
     checkGlError("glUniform1f");
-
+    /*
     glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
@@ -266,6 +376,11 @@ void renderFrame()
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	//glDrawArrays(GL_POLYGON_OFFSET_FILL, 0, 3);
     checkGlError("glDrawArrays");
+    */
+    for (int i = 0; i < asteroids.size(); ++i)
+    {
+        drawAsteroid(asteroids[i]);        
+    }
 }
 
 extern "C" {
