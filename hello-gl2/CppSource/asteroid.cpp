@@ -9,7 +9,7 @@ const int   maxvalueInt = 1000;
 const float maxvalueFlt = 100.0f;
 
 
-Asteroid::Asteroid()
+Asteroid::Asteroid(int n)
 {
     /*
     points.resize(10);
@@ -19,7 +19,7 @@ Asteroid::Asteroid()
     points[6] = -100.0f;  points[7] =    0.0f;
     */
 
-    generate();
+    generate(n);
 
     int size = points.size();
     int count = size / 2 - 1;
@@ -39,7 +39,7 @@ Asteroid::Asteroid()
 
     for (int i = 0; i < size; ++i)
     {
-        points[i] += 200;
+        points[i] += 500;
     }
 }
 
@@ -49,10 +49,10 @@ Asteroid::~Asteroid()
 }
 
 
-void Asteroid::generate()
+void Asteroid::generate(int n)
 {
     srand(0);
-    int count = 6;// 3 + rand() % 5;
+    int count = n;// 3 + rand() % 5;
     vector<float> angles(count);
     float summ = 0.0f;
     for (int i = 0; i < count; ++i)
@@ -107,7 +107,17 @@ void Asteroid::generate()
     for (int i = 0; i < count; ++i)
     {
         float summ = sqrtf(points[i * 2] * points[i * 2] + points[i * 2 + 1] * points[i * 2 + 1]);
-        points[i * 2] *= 100.0f / summ;
-        points[i * 2 + 1] *= 100.0f / summ;
+        points[i * 2] *= 300.0f / summ;
+        points[i * 2 + 1] *= 300.0f / summ;
+    }
+}
+
+
+void Asteroid::move(float x, float y)
+{
+    for (int i = 0; i < points.size(); i += 2)
+    {
+        points[i] += x;
+        points[i + 1] += y;
     }
 }

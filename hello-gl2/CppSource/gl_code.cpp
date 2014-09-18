@@ -228,7 +228,15 @@ bool setupGraphics(int w, int h)
     //float ratio = (float)w / (float)h;
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
-    asteroids.resize(1);
+    asteroids.push_back(Asteroid(3));
+    asteroids.push_back(Asteroid(4));
+    asteroids.push_back(Asteroid(5));
+    asteroids.push_back(Asteroid(6));
+
+    asteroids[0].move( 300.0f,  200.0f);
+    asteroids[1].move(-300.0f,  200.0f);
+    asteroids[2].move( 300.0f, -200.0f);
+    asteroids[3].move(-300.0f, -200.0f);
 
     return true;
 }

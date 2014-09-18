@@ -5,10 +5,12 @@
 class Asteroid
 {
 public:
-    Asteroid();
+    Asteroid(int n);
     ~Asteroid();
 
-    void generate();
+    void generate(int n);
 
     std::vector<float> points;
+
+    void move(float x, float y);
 };
