@@ -21,7 +21,8 @@ Ship::Ship()
     points[4] = width;  points[5] = -height;
     points[6] = 0.0f;   points[7] = 0.0f;
 
-
+    direction.x = 0.0f;
+    direction.y = 1.0f;
 }
 
 
@@ -37,4 +38,14 @@ void Ship::move(float x, float y)
         points[i] += x;
         points[i + 1] += y;
     }
+}
+
+
+Point Ship::getCenter()
+{
+    int count = points.size();
+    Point p;
+    p.x = points[count - 2];
+    p.y = points[count - 1];
+    return p;
 }

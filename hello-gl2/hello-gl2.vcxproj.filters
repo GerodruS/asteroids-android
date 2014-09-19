@@ -52,5 +52,8 @@
     <ClInclude Include="CppSource\ship.h">
       <Filter>CppSource</Filter>
     </ClInclude>
+    <ClInclude Include="CppSource\point.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSource\asteroid.h" />
+    <ClInclude Include="CppSource\point.h" />
     <ClInclude Include="CppSource\ship.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

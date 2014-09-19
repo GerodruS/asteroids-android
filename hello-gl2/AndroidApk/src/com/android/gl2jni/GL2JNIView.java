@@ -78,6 +78,24 @@ class GL2JNIView extends GLSurfaceView {
         init(translucent, depth, stencil);
     }
 
+    public boolean onTouchEvent(final MotionEvent event) {
+		int Action = event.getAction();
+        switch(Action)
+        {
+            case MotionEvent.ACTION_DOWN:
+            	GL2JNILib.actionDown(event.getX(), event.getY());
+            break;
+            case MotionEvent.ACTION_MOVE:
+            	GL2JNILib.actionMove(event.getX(), event.getY());
+            break;
+            case MotionEvent.ACTION_UP:
+            	GL2JNILib.actionUp(event.getX(), event.getY());
+            break;
+        }
+        
+        return true;
+    }
+
     private void init(boolean translucent, int depth, int stencil) {
 
         /* By default, GLSurfaceView() creates a RGB_565 opaque surface.

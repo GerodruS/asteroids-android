@@ -180,9 +180,14 @@ GLfloat gTriangleVertices[] = {
 
 std::vector<Asteroid> asteroids;
 Ship ship;
+int screen_width;
+int screen_height;
 
 bool setupGraphics(int w, int h)
 {
+    screen_width = w;
+    screen_height = h;
+
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -397,9 +402,138 @@ void renderFrame()
     drawAsteroid(ship.points);
 }
 
+
+void rotate(float  x_in, float  y_in,
+    float& x_out, float& y_out,
+    float  angle)
+{
+    angle *= 0.0174532925f;
+
+    x_out = x_in * cos(angle) - y_in * sin(angle);
+    y_out = x_in * sin(angle) + y_in * cos(angle);
+}
+
+
+void rotate(float  x_in,     float  y_in,
+            float  x_center, float  y_center,
+            float& x_out,    float& y_out,
+            float  angle)
+{
+    x_in -= x_center;
+    y_in -= y_center;
+
+    rotate(x_in, y_in, x_out, y_out, angle);
+
+    x_out += x_center;
+    y_out += y_center;
+}
+
+
+void rotate(std::vector<float>& point, float angle)
+{
+    int count = point.size();
+    float x_center = point[count - 2];
+    float y_center = point[count - 1];
+    float x, y;
+    for (int i = 0; i < count; i += 2)
+    {
+        rotate(point[i], point[i + 1], x_center, y_center, x, y, angle);
+        point[i] = x;
+        point[i + 1] = y;
+    }
+}
+
+
+void rotate(Point& point, const Point& center, float angle)
+{
+    float x, y;
+    rotate(point.x, point.y, center.x, center.y, x, y, angle);
+    point.x = x;
+    point.y = y;
+}
+
+
+void rotate(Point& point, float angle)
+{
+    float x, y;
+    rotate(point.x, point.y, x, y, angle);
+    point.x = x;
+    point.y = y;
+}
+
+
+void touchDown(float x, float y)
+{
+    y = screen_height - y;
+    if (0 <= y && y < 300)
+    {
+        float angle = 10.0f;
+        float speed = 10.0f;
+        if (0 <= x && x < 300)
+        {
+            rotate(ship.points, angle);
+            //Point center = ship.getCenter();
+            rotate(ship.direction, angle);
+        }
+        else if (300 <= x && x < 600)
+        {
+            rotate(ship.points, -angle);
+            //Point center = ship.getCenter();
+            rotate(ship.direction, -angle);
+        }
+        else if (600 <= x && x < 900)
+        {
+            ship.move(ship.direction.x * speed, ship.direction.y * speed);
+        }
+        else if (900 <= x && x < 1200)
+        {
+            ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
+        }
+    }
+    //ship.move(x - (screen_width / 2.0), -(y - (screen_height / 2.0)));
+}
+
+
+void touchMove(float x, float y)
+{
+}
+
+
+void touchUp(float x, float y)
+{
+    //y = screen_height / 2.0 - y;
+    /*
+    if (0 <= y && y < 300)
+    {
+        if (0 <= x && x < 300)
+        {
+            ship.move(-10, 0);
+        }
+        else if (300 <= x && x < 600)
+        {
+            ship.move(10, 0);
+        }
+        else if (600 <= x && x < 900)
+        {
+            ship.move(0, -10);
+        }
+        else if (900 <= x && x < 1200)
+        {
+            ship.move(0, 10);
+        }
+    }
+    */
+    //ship.move(-(x - (screen_width / 2.0)), y - (screen_height / 2.0));
+}
+
+
 extern "C" {
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height);
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
+
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jfloat x, jfloat y);
 };
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
@@ -410,4 +544,25 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobj
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj)
 {
     renderFrame();
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+{
+    float x = jx;
+    float y = jy;
+    touchDown(x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+{
+    float x = jx;
+    float y = jy;
+    touchMove(x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+{
+    float x = jx;
+    float y = jy;
+    touchUp(x, y);
 }
