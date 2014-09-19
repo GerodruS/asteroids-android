@@ -29,6 +29,7 @@
 #include <string>
 
 #include "asteroid.h"
+#include "ship.h"
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -178,6 +179,7 @@ GLfloat gTriangleVertices[] = {
     1790.0f, 10.0f };
 
 std::vector<Asteroid> asteroids;
+Ship ship;
 
 bool setupGraphics(int w, int h)
 {
@@ -238,6 +240,8 @@ bool setupGraphics(int w, int h)
     asteroids[2].move( 300.0f, -200.0f);
     asteroids[3].move(-300.0f, -200.0f);
 
+    ship.move(500, 500);
+
     return true;
 }
 
@@ -247,19 +251,19 @@ const GLfloat gTriangleVertices2[] = {  0.5f,  0.5f,
 
 std::vector<GLfloat> points(6);
 
-void drawAsteroid(Asteroid& asteroid)
+void drawAsteroid(std::vector<float>& modelpoints)
 {
-    int size = asteroid.points.size();
+    int size = modelpoints.size();
     GLsizei count = size / 2 - 1;
 
-    points[4] = asteroid.points[size - 2];
-    points[5] = asteroid.points[size - 1];
+    points[4] = modelpoints[size - 2];
+    points[5] = modelpoints[size - 1];
 
     for (int i = 0; i < count; ++i)
     {
         for (int j = 0; j < 4; ++j)
         {
-            points[j] = asteroid.points[(j + i * 2) % (size - 2)];
+            points[j] = modelpoints[(j + i * 2) % (size - 2)];
         }
 
         switch (i % 6)
@@ -387,9 +391,10 @@ void renderFrame()
     */
     for (int i = 0; i < asteroids.size(); ++i)
     {
-        asteroids[i].move(1, 1);
-        drawAsteroid(asteroids[i]);        
+        //asteroids[i].move(1, 1);
+        //drawAsteroid(asteroids[i].points);        
     }
+    drawAsteroid(ship.points);
 }
 
 extern "C" {

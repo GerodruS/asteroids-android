@@ -41,6 +41,7 @@
   <ItemGroup>
     <ClCompile Include="CppSource\asteroid.cpp" />
     <ClCompile Include="CppSource\gl_code.cpp" />
+    <ClCompile Include="CppSource\ship.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml" />
@@ -53,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSource\asteroid.h" />
+    <ClInclude Include="CppSource\ship.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,6 +18,9 @@
     <ClCompile Include="CppSource\asteroid.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\ship.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -44,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSource\asteroid.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\ship.h">
       <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>
