@@ -228,9 +228,9 @@ bool setupGraphics(int w, int h)
     //float ratio = (float)w / (float)h;
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
-    asteroids.push_back(Asteroid(3));
-    asteroids.push_back(Asteroid(4));
-    asteroids.push_back(Asteroid(5));
+    asteroids.push_back(Asteroid(6));
+    asteroids.push_back(Asteroid(6));
+    asteroids.push_back(Asteroid(6));
     asteroids.push_back(Asteroid(6));
 
     asteroids[0].move( 300.0f,  200.0f);
@@ -262,7 +262,7 @@ void drawAsteroid(Asteroid& asteroid)
             points[j] = asteroid.points[(j + i * 2) % (size - 2)];
         }
 
-        switch (i)
+        switch (i % 6)
         {
         case 0:
             colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
@@ -387,6 +387,7 @@ void renderFrame()
     */
     for (int i = 0; i < asteroids.size(); ++i)
     {
+        asteroids[i].move(1, 1);
         drawAsteroid(asteroids[i]);        
     }
 }

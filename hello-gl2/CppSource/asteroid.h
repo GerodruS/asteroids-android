@@ -13,4 +13,9 @@ public:
     std::vector<float> points;
 
     void move(float x, float y);
+
+    void setPosition(float x, float y);
+
+    float getPositionX();
+    float getPositionY();
 };
