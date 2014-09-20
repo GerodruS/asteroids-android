@@ -9,15 +9,9 @@ const int   maxvalueInt = 1000;
 const float maxvalueFlt = 100.0f;
 
 
-Asteroid::Asteroid(int n)
+Asteroid::Asteroid()
 {
-    /*
-    points.resize(10);
-    points[0] =    0.0f;  points[1] =  100.0f;
-    points[2] =  100.0f;  points[3] =    0.0f;
-    points[4] =    0.0f;  points[5] = -100.0f;
-    points[6] = -100.0f;  points[7] =    0.0f;
-    */
+    int n = 3 + rand() % 6;
 
     generate(n);
 
@@ -41,6 +35,9 @@ Asteroid::Asteroid(int n)
     {
         points[i] += 500;
     }
+
+    velocity.x = 0.0f;
+    velocity.y = 0.0f;
 }
 
 
@@ -109,8 +106,8 @@ void Asteroid::generate(int n)
     for (int i = 0; i < count; ++i)
     {
         float summ = sqrtf(points[i * 2] * points[i * 2] + points[i * 2 + 1] * points[i * 2 + 1]);
-        points[i * 2] *= 200.0f / summ;
-        points[i * 2 + 1] *= 200.0f / summ;
+        points[i * 2] *= 20.0f / summ;
+        points[i * 2 + 1] *= 20.0f / summ;
     }
 }
 
@@ -134,6 +131,13 @@ void Asteroid::setPosition(float x, float y)
 }
 
 
+void Asteroid::setVelocity(float x, float y)
+{
+    velocity.x = x;
+    velocity.y = y;
+}
+
+
 float Asteroid::getPositionX()
 {
     return points[points.size() - 2];
@@ -143,4 +147,10 @@ float Asteroid::getPositionX()
 float Asteroid::getPositionY()
 {
     return points[points.size() - 1];
+}
+
+
+void Asteroid::step()
+{
+    move(velocity.x, velocity.y);
 }

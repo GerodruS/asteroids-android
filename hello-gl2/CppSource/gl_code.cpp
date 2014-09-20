@@ -27,6 +27,7 @@
 #include <math.h>
 #include <vector>
 #include <string>
+#include <time.h>
 
 #include "asteroid.h"
 #include "ship.h"
@@ -182,9 +183,101 @@ std::vector<Asteroid> asteroids;
 Ship ship;
 int screen_width;
 int screen_height;
+time_t time_prev;
+
+void setPoint(Point& point, float value, float radius)
+{
+    if (0.0f <= value && value < radius)
+    {
+        point.x = radius;
+        point.y = value;
+    }
+    else if (radius <= value && value < 2.0f * radius)
+    {
+        point.x = value - radius;
+        point.y = 0.0f;
+    }
+    else if (2.0f * radius <= value && value < 3.0f * radius)
+    {
+        point.x = 0.0f;
+        point.y = value - 2.0f * radius;
+    }
+    else // (3.0f * radius <= p < 4.0f * radius)
+    {
+        point.x = value - 3.0f * radius;
+        point.y = radius;
+    }
+}
+
+void generateAsteroid()
+{
+    float radius = 1000.0f;
+    Point positionFrom, positionTo;
+    float p = rand() % int(4.0f * radius);
+    setPoint(positionFrom, p, radius);
+    float d = p + 2.0f * radius + (rand() % int(2.0f * radius) - radius);
+    if (4.0f * radius < d)
+    {
+        d -= 4.0f * radius;
+    }
+    setPoint(positionTo, d, radius);
+    /*
+    float d = rand() % int(radius);
+    if (0.0f <= p && p < radius)
+    {
+        positionFrom.x = radius;
+        positionFrom.y = p;
+
+        positionTo.x = 0.0f;
+        positionTo.y = d;
+    }
+    else if (radius <= p && p < 2.0f * radius)
+    {
+        positionFrom.x = p - radius;
+        positionFrom.y = 0.0f;
+
+        positionTo.x = d;
+        positionTo.y = radius;
+    }
+    else if (2.0f * radius <= p && p < 3.0f * radius)
+    {
+        positionFrom.x = 0.0f;
+        positionFrom.y = p - 2.0f * radius;
+
+        positionTo.x = radius;
+        positionTo.y = d;
+    }
+    else // (3.0f * radius <= p < 4.0f * radius)
+    {
+        positionFrom.x = p - 3.0f * radius;
+        positionFrom.y = radius;
+
+        positionTo.x = d;
+        positionTo.y = 0.0f;
+    }
+    */
+
+    Asteroid asteroidNew_temp;
+    int index = asteroids.size();
+    asteroids.push_back(asteroidNew_temp);
+    Asteroid& asteroidNew = asteroids[index];
+    //asteroidNew.setPosition(positionFrom.x + (screen_width - radius) / 2.0f, positionFrom.y + (screen_height - radius) / 2.0f);
+    asteroidNew.setPosition(positionFrom.x + 500 - radius / 2.0f, positionFrom.y + 500 - radius / 2.0f);
+
+    positionTo.x -= positionFrom.x;
+    positionTo.y -= positionFrom.y;
+    const float velocityAsteroid = 1.0f;
+    PointFunctions::normalize(positionTo, velocityAsteroid);
+
+    //positionTo.x = 1;
+    //positionTo.y = 1;
+    asteroidNew.setVelocity(positionTo.x, positionTo.y);
+}
 
 bool setupGraphics(int w, int h)
 {
+    time(&time_prev);
+
     screen_width = w;
     screen_height = h;
 
@@ -235,6 +328,7 @@ bool setupGraphics(int w, int h)
     //float ratio = (float)w / (float)h;
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
+    /*
     asteroids.push_back(Asteroid(6));
     asteroids.push_back(Asteroid(6));
     asteroids.push_back(Asteroid(6));
@@ -244,8 +338,13 @@ bool setupGraphics(int w, int h)
     asteroids[1].move(-300.0f,  200.0f);
     asteroids[2].move( 300.0f, -200.0f);
     asteroids[3].move(-300.0f, -200.0f);
+    */
 
     ship.move(500, 500);
+    for (int i = 0; i < 100; ++i)
+    {
+        generateAsteroid();
+    }
 
     return true;
 }
@@ -355,6 +454,9 @@ void drawAsteroid(std::vector<float>& modelpoints)
 
 void renderFrame()
 {
+    time_t time_now = time(NULL);
+    float deltaTime = difftime(time_now, time_prev);
+    time_prev = time_now;
 
     static float grey;
     grey += 0.01f;
@@ -396,8 +498,21 @@ void renderFrame()
     */
     for (int i = 0; i < asteroids.size(); ++i)
     {
+        asteroids[i].step();
         //asteroids[i].move(1, 1);
-        //drawAsteroid(asteroids[i].points);        
+
+
+        float x = asteroids[i].getPositionX();
+        float y = asteroids[i].getPositionY();
+        float border = 100;
+        if (x < -border || y < -border || 1000 + border < x || 1000 + border < y)
+        {
+            asteroids.erase(asteroids.begin() + i);
+        }
+        else
+        {
+            drawAsteroid(asteroids[i].points);
+        }
     }
     drawAsteroid(ship.points);
 }
