@@ -160,8 +160,22 @@ GLuint yzeroID;
 GLfloat yzeroValue;
 GLuint colorID;
 GLfloat colorValue[] = {
-    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f, 1.0f,
     1.0f, 0.0f, 0.0f, 1.0f, 
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 0.0f, 1.0f
 };
 
@@ -324,8 +338,56 @@ const GLfloat gTriangleVertices2[] = {  0.5f,  0.5f,
 
 std::vector<GLfloat> points(6);
 
+GLushort gVerticesIndexs[] = {
+    0, 1, 2,
+    0, 2, 3,
+    0, 3, 4,
+    0, 4, 5,
+    0, 5, 6,
+    0, 6, 7,
+    0, 7, 8,
+    0, 8, 9,
+    0, 9, 10,
+    0, 10, 11,
+    0, 11, 12,
+    0, 12, 13,
+    0, 13, 14,
+    0, 14, 15,
+    0, 15, 16,
+    0, 16, 17,
+    0, 17, 18,
+    0, 18, 19,
+    0, 19, 20
+};
+
 void drawAsteroid(std::vector<float>& modelpoints)
 {
+    int size = modelpoints.size();
+    GLsizei count = size / 2 - 1;
+
+    GLfloat* pnt = &(modelpoints[0]);
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, pnt);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvPositionHandle);
+    checkGlError("glEnableVertexAttribArray");
+
+    glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, colorValue);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(colorID);
+    checkGlError("glEnableVertexAttribArray");
+
+    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    gVerticesIndexs[count * 3 - 1] = 1;
+
+    glDrawElements(GL_TRIANGLES, 3 * count, GL_UNSIGNED_SHORT, gVerticesIndexs);
+    checkGlError("glDrawElements");
+
+    gVerticesIndexs[count * 3 - 1] = count + 1;
+
+    glDisableVertexAttribArray(gvPositionHandle);
+    glDisableVertexAttribArray(colorID);
+
+    /*
     int size = modelpoints.size();
     GLsizei count = size / 2 - 1;
 
@@ -402,22 +464,6 @@ void drawAsteroid(std::vector<float>& modelpoints)
         glDisableVertexAttribArray(gvPositionHandle);
         glDisableVertexAttribArray(colorID);
     }
-    /*
-    GLfloat* pnt = &(asteroid.points[0]);
-    GLsizei count = asteroid.points.size() - 1;
-
-    for (int i = 0; i < asteroid.points.size() - 2; ++i)
-    {
-        points[i] = asteroid.points[i];
-        points[i + 1] = asteroid.points[i + 1];
-    }
-
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, pnt);
-    checkGlError("glVertexAttribPointer");
-    glEnableVertexAttribArray(gvPositionHandle);
-    checkGlError("glEnableVertexAttribArray");
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    checkGlError("glDrawArrays");
     */
 }
 
@@ -430,13 +476,6 @@ void renderFrame()
     float deltaTime = difftime(time_now, time_prev);
     time_prev = time_now;
 
-    static float grey;
-    grey += 0.01f;
-    if (grey > 1.0f) {
-        grey = 0.0f;
-    }
-    //glClearColor(grey, grey, grey, 1.0f);
-	//glClearColor((rand() % 100) / 100.0f, (rand() % 100) / 100.0f, (rand() % 100) / 100.0f, 1.0f);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -459,20 +498,10 @@ void renderFrame()
 
     glUniform1f(yzeroID, yzeroValue);
     checkGlError("glUniform1f");
-    /*
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
-    checkGlError("glVertexAttribPointer");
-    glEnableVertexAttribArray(gvPositionHandle);
-    checkGlError("glEnableVertexAttribArray");
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	//glDrawArrays(GL_POLYGON_OFFSET_FILL, 0, 3);
-    checkGlError("glDrawArrays");
-    */
+
     for (int i = 0; i < asteroids.size(); ++i)
     {
         asteroids[i].step();
-        //asteroids[i].move(1, 1);
-
 
         float x = asteroids[i].getPositionX();
         float y = asteroids[i].getPositionY();
