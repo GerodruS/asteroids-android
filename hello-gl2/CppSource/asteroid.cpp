@@ -18,7 +18,7 @@ const int   pointsCountMin = 10;
 Asteroid::Asteroid() :
     radiusMax(0.0f),
     radiusMin(0.0f)
-//    , angularVelocity(0.0f)
+    , angularVelocity(0.0f)
 {
     int n = pointsCountMin + rand() % (pointsCountMax - pointsCountMin);
 
@@ -48,7 +48,7 @@ Asteroid::Asteroid() :
     velocity.x = 0.0f;
     velocity.y = 0.0f;
 
-    //angularVelocity = (rand() % 20) - 10;
+    angularVelocity = ((rand() % 20) - 10) / 7.0f;
 }
 
 
@@ -186,7 +186,7 @@ float Asteroid::getPositionY()
 void Asteroid::step()
 {
     move(velocity.x, velocity.y);
-    //rotate(angularVelocity);
+    rotate(angularVelocity);
 }
 
 
@@ -297,7 +297,7 @@ bool Asteroid::asteroidIntersect(Asteroid& asteroid)
     return false;
 }
 
-/*
+
 void Asteroid::rotate(float angle)
 {
     int count = points.size();
@@ -336,4 +336,3 @@ void Asteroid::rotate(float  x_in, float  y_in,
     x_out = x_in * cos(angle) - y_in * sin(angle);
     y_out = x_in * sin(angle) + y_in * cos(angle);
 }
-*/

@@ -221,41 +221,6 @@ void generateAsteroid()
         d -= 4.0f * radius;
     }
     setPoint(positionTo, d, radius);
-    /*
-    float d = rand() % int(radius);
-    if (0.0f <= p && p < radius)
-    {
-        positionFrom.x = radius;
-        positionFrom.y = p;
-
-        positionTo.x = 0.0f;
-        positionTo.y = d;
-    }
-    else if (radius <= p && p < 2.0f * radius)
-    {
-        positionFrom.x = p - radius;
-        positionFrom.y = 0.0f;
-
-        positionTo.x = d;
-        positionTo.y = radius;
-    }
-    else if (2.0f * radius <= p && p < 3.0f * radius)
-    {
-        positionFrom.x = 0.0f;
-        positionFrom.y = p - 2.0f * radius;
-
-        positionTo.x = radius;
-        positionTo.y = d;
-    }
-    else // (3.0f * radius <= p < 4.0f * radius)
-    {
-        positionFrom.x = p - 3.0f * radius;
-        positionFrom.y = radius;
-
-        positionTo.x = d;
-        positionTo.y = 0.0f;
-    }
-    */
 
     Asteroid asteroidNew_temp;
     int index = asteroids.size();
@@ -540,6 +505,9 @@ void renderFrame()
         {
             if (asteroids[i].asteroidIntersect(asteroids[j]))
             {
+                generateAsteroid();
+                generateAsteroid();
+
                 asteroids.erase(asteroids.begin() + i);
                 asteroids.erase(asteroids.begin() + j);
                 del = true;

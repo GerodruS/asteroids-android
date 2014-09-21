@@ -12,7 +12,7 @@ public:
 
     void generate(int n);
 
-    //float angularVelocity;
+    float angularVelocity;
     std::vector<float> points;
     Point velocity;
 
@@ -34,7 +34,6 @@ public:
     float radiusMax;
     float radiusMin;
 
-    /*
     void rotate(float  x_in, float  y_in,
         float& x_out, float& y_out,
         float  angle);
@@ -45,5 +44,4 @@ public:
         float  angle);
 
     void rotate(float angle);
-    */
 };
