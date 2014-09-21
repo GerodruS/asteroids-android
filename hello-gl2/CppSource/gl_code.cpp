@@ -211,7 +211,7 @@ void setPoint(Point& point, float value, float radius)
 
 void generateAsteroid()
 {
-    float radius = 1000.0f;
+    float radius = 500.0f;
     Point positionFrom, positionTo;
     float p = rand() % int(4.0f * radius);
     setPoint(positionFrom, p, radius);
@@ -266,7 +266,7 @@ void generateAsteroid()
 
     positionTo.x -= positionFrom.x;
     positionTo.y -= positionFrom.y;
-    const float velocityAsteroid = 1.0f;
+    const float velocityAsteroid = 2.0f;
     PointFunctions::normalize(positionTo, velocityAsteroid);
 
     //positionTo.x = 1;
@@ -341,10 +341,12 @@ bool setupGraphics(int w, int h)
     */
 
     ship.move(500, 500);
+    /*
     for (int i = 0; i < 100; ++i)
     {
         generateAsteroid();
     }
+    */
 
     return true;
 }
@@ -369,7 +371,7 @@ void drawAsteroid(std::vector<float>& modelpoints)
         {
             points[j] = modelpoints[(j + i * 2) % (size - 2)];
         }
-
+        
         switch (i % 6)
         {
         case 0:
@@ -452,6 +454,9 @@ void drawAsteroid(std::vector<float>& modelpoints)
     */
 }
 
+float time_cooldown = 3.0f;
+float time_remain = 0.0f;
+
 void renderFrame()
 {
     time_t time_now = time(NULL);
@@ -515,6 +520,38 @@ void renderFrame()
         }
     }
     drawAsteroid(ship.points);
+    ship.step();
+
+    if (0.0f < time_remain)
+    {
+        time_remain -= deltaTime;
+    }
+    else
+    {
+        generateAsteroid();
+        time_remain = time_cooldown;
+    }
+
+    // collisions
+    for (int i = 0; i < asteroids.size(); ++i)
+    {
+        bool del = false;
+        for (int j = i + 1; j < asteroids.size(); ++j)
+        {
+            if (asteroids[i].asteroidIntersect(asteroids[j]))
+            {
+                asteroids.erase(asteroids.begin() + i);
+                asteroids.erase(asteroids.begin() + j);
+                del = true;
+                break;
+            }
+        }
+        if (del)
+        {
+            --i;
+        }
+    }
+    //
 }
 
 

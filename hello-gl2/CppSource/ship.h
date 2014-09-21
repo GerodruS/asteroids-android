@@ -14,4 +14,6 @@ public:
 
     void move(float x, float y);
     Point getCenter();
+
+    void step();
 };

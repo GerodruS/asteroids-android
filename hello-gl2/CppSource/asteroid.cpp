@@ -8,10 +8,19 @@ using namespace std;
 const int   maxvalueInt = 1000;
 const float maxvalueFlt = 100.0f;
 
+const int   radiusMaxAll = 150;
+const int   radiusMinAll = 50;
 
-Asteroid::Asteroid()
+const int   pointsCountMax = 6;
+const int   pointsCountMin = 10;
+
+
+Asteroid::Asteroid() :
+    radiusMax(0.0f),
+    radiusMin(0.0f)
+//    , angularVelocity(0.0f)
 {
-    int n = 3 + rand() % 6;
+    int n = pointsCountMin + rand() % (pointsCountMax - pointsCountMin);
 
     generate(n);
 
@@ -38,6 +47,8 @@ Asteroid::Asteroid()
 
     velocity.x = 0.0f;
     velocity.y = 0.0f;
+
+    //angularVelocity = (rand() % 20) - 10;
 }
 
 
@@ -106,8 +117,30 @@ void Asteroid::generate(int n)
     for (int i = 0; i < count; ++i)
     {
         float summ = sqrtf(points[i * 2] * points[i * 2] + points[i * 2 + 1] * points[i * 2 + 1]);
-        points[i * 2] *= 20.0f / summ;
-        points[i * 2 + 1] *= 20.0f / summ;
+        float r = (radiusMinAll + rand() % (radiusMaxAll - radiusMinAll));
+        points[i * 2] *= r / summ;
+        points[i * 2 + 1] *= 100.0f / summ;
+    }
+
+    radiusMin = 0.0f;
+    radiusMax = 0.0f;
+    Point c;
+    c.x = points[count * 2];
+    c.y = points[count * 2 + 1];
+    for (int i = 0; i < count - 1; ++i)
+    {
+        Point a;
+        a.x = points[i * 2];
+        a.y = points[i * 2 + 1];
+        float r = PointFunctions::distance(a, c);
+        if (r < radiusMin || 0.0f == radiusMin)
+        {
+            radiusMin = r;
+        }
+        if (radiusMax < r || 0.0f == radiusMax)
+        {
+            radiusMax = r;
+        }
     }
 }
 
@@ -153,4 +186,154 @@ float Asteroid::getPositionY()
 void Asteroid::step()
 {
     move(velocity.x, velocity.y);
+    //rotate(angularVelocity);
 }
+
+
+bool Asteroid::pointIntersect(const Point& point)
+{
+    Point c;
+    getCenter(c);
+    float d = PointFunctions::distance(point, c);
+    if (radiusMax <= d)
+    {
+        return false;
+    }
+    else if (d <= radiusMin)
+    {
+        return true;
+    }
+    else
+    {
+        return polygonsIntersect(point);
+    }
+}
+
+
+bool Asteroid::polygonsIntersect(const Point& point)
+{
+    Point a, b, c;
+    getCenter(c);
+    int count = points.size();
+    for (int i = 0; i < count - 2; i += 2)
+    {
+        int j = (i + 2) % (count - 2);
+        a.x = points[i];
+        a.y = points[i + 1];
+        b.x = points[j];
+        b.y = points[j + 1];
+        bool res = polygonIntersect(a, b, c, point);
+        if (res)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool Asteroid::polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point)
+{
+    float xMin = fminf(a.x, fminf(b.x, c.x));
+    float yMin = fminf(a.y, fminf(b.y, c.y));
+    float xMax = fmaxf(a.x, fmaxf(b.x, c.x));
+    float yMax = fmaxf(a.y, fmaxf(b.y, c.y));
+    if (point.x < xMin || xMax < point.x ||
+        point.y < yMin || yMax < point.y)
+    {
+        return false;
+    }
+    else
+    {
+        float sqrA = PointFunctions::polygonSquare(a, b, c);
+        float sqrB = 0.0f;
+        sqrB += PointFunctions::polygonSquare(a, b, point);
+        sqrB += PointFunctions::polygonSquare(b, c, point);
+        sqrB += PointFunctions::polygonSquare(c, a, point);
+        if (fabsf(sqrA - sqrB) < 0.001f)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+
+void Asteroid::getCenter(Point& point)
+{
+    point.x = getPositionX();
+    point.y = getPositionY();
+}
+
+
+bool Asteroid::asteroidIntersect(Asteroid& asteroid)
+{
+    Point p;
+    int count = asteroid.points.size();
+    for (int i = 0; i < count; i += 2)
+    {
+        p.x = asteroid.points[i];
+        p.y = asteroid.points[i + 1];
+        bool res = pointIntersect(p);
+        if (res)
+        {
+            return true;
+        }
+    }
+    count = points.size();
+    for (int i = 0; i < count; i += 2)
+    {
+        p.x = points[i];
+        p.y = points[i + 1];
+        bool res = asteroid.pointIntersect(p);
+        if (res)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+void Asteroid::rotate(float angle)
+{
+    int count = points.size();
+    float x_center = points[count - 2];
+    float y_center = points[count - 1];
+    float x, y;
+    for (int i = 0; i < count; i += 2)
+    {
+        rotate(points[i], points[i + 1], x_center, y_center, x, y, angle);
+        points[i] = x;
+        points[i + 1] = y;
+    }
+}
+
+
+void Asteroid::rotate(float  x_in, float  y_in,
+    float  x_center, float  y_center,
+    float& x_out, float& y_out,
+    float  angle)
+{
+    x_in -= x_center;
+    y_in -= y_center;
+
+    rotate(x_in, y_in, x_out, y_out, angle);
+
+    x_out += x_center;
+    y_out += y_center;
+}
+
+void Asteroid::rotate(float  x_in, float  y_in,
+    float& x_out, float& y_out,
+    float  angle)
+{
+    angle *= 0.0174532925f;
+
+    x_out = x_in * cos(angle) - y_in * sin(angle);
+    y_out = x_in * sin(angle) + y_in * cos(angle);
+}
+*/

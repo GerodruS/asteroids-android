@@ -49,3 +49,38 @@ Point Ship::getCenter()
     p.y = points[count - 1];
     return p;
 }
+
+
+void Ship::step()
+{
+    const float minX = 500.0f - 300.0f;
+    const float maxX = 500.0f + 300.0f;
+    const float deltaX = maxX - minX;
+
+    const float minY = 500.0f - 300.0f;
+    const float maxY = 500.0f + 300.0f;
+    const float deltaY = maxY - minY;
+
+    Point c = getCenter();
+    if (c.x < minX)
+    {
+        c.x += deltaX;
+        move(deltaX, 0.0f);
+    }
+    else if (maxX < c.x)
+    {
+        c.x -= deltaX;
+        move(-deltaX, 0.0f);
+    }
+    
+    if (c.y < minY)
+    {
+        c.y += deltaY;
+        move(0.0f, deltaY);
+    }
+    else if (maxY < c.y)
+    {
+        c.y -= deltaY;
+        move(0.0f, -deltaY);
+    }
+}
