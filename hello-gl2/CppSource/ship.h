@@ -14,6 +14,8 @@ public:
 
     void move(float x, float y);
     Point getCenter();
+    Point getBulletStartPosition();
+    Point getBulletStartMove();
 
     void step();
 };

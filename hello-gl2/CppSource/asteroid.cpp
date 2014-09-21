@@ -298,6 +298,14 @@ bool Asteroid::asteroidIntersect(Asteroid& asteroid)
 }
 
 
+bool Asteroid::bulletIntersect(Bullet& bullet)
+{
+    Point p;
+    bullet.getCenter(p);
+    return pointIntersect(p);
+}
+
+
 void Asteroid::rotate(float angle)
 {
     int count = points.size();

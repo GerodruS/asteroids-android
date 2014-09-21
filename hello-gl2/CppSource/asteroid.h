@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "point.h"
+#include "bullet.h"
 
 class Asteroid
 {
@@ -26,6 +27,7 @@ public:
     bool pointIntersect(const Point& point);
     bool polygonsIntersect(const Point& point);
     bool polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point);
+    bool bulletIntersect(Bullet& bullet);
 
     float getPositionX();
     float getPositionY();

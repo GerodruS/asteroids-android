@@ -30,6 +30,7 @@
 #include <time.h>
 
 #include "asteroid.h"
+#include "bullet.h"
 #include "ship.h"
 
 #define  LOG_TAG    "libgl2jni"
@@ -180,6 +181,7 @@ GLfloat gTriangleVertices[] = {
     1790.0f, 10.0f };
 
 std::vector<Asteroid> asteroids;
+std::vector<Bullet> bullets;
 Ship ship;
 int screen_width;
 int screen_height;
@@ -484,6 +486,21 @@ void renderFrame()
             drawAsteroid(asteroids[i].points);
         }
     }
+    for (int i = 0; i < bullets.size(); ++i)
+    {
+        bullets[i].step();
+        float x = bullets[i].getPositionX();
+        float y = bullets[i].getPositionY();
+        float border = 100;
+        if (x < -border || y < -border || 1000 + border < x || 1000 + border < y)
+        {
+            bullets.erase(bullets.begin() + i);
+        }
+        else
+        {
+            drawAsteroid(bullets[i].points);
+        }
+    }
     drawAsteroid(ship.points);
     ship.step();
 
@@ -498,6 +515,25 @@ void renderFrame()
     }
 
     // collisions
+    for (int i = 0; i < bullets.size(); ++i)
+    {
+        bool del = false;
+        for (int j = 0; j < asteroids.size(); ++j)
+        {
+            if (asteroids[j].bulletIntersect(bullets[i]))
+            {
+                bullets.erase(bullets.begin() + i);
+                asteroids.erase(asteroids.begin() + j);
+                del = true;
+                break;
+            }
+        }
+        if (del)
+        {
+            --i;
+        }
+    }
+    /*
     for (int i = 0; i < asteroids.size(); ++i)
     {
         bool del = false;
@@ -519,6 +555,7 @@ void renderFrame()
             --i;
         }
     }
+    */
     //
 }
 
@@ -607,7 +644,16 @@ void touchDown(float x, float y)
         }
         else if (900 <= x && x < 1200)
         {
-            ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
+            //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
+            // fire
+            Bullet bullet_tmp;
+            bullets.push_back(bullet_tmp);
+            Bullet& bullet = bullets[bullets.size() - 1];
+
+            Point startPosition = ship.getBulletStartPosition();
+            bullet.setPosition(startPosition.x, startPosition.y);
+            Point velocity = ship.getBulletStartMove();
+            bullet.setVelocity(velocity.x, velocity.y);
         }
     }
     //ship.move(x - (screen_width / 2.0), -(y - (screen_height / 2.0)));

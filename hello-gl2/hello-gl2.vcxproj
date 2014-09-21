@@ -40,6 +40,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppSource\asteroid.cpp" />
+    <ClCompile Include="CppSource\bullet.cpp" />
     <ClCompile Include="CppSource\gl_code.cpp" />
     <ClCompile Include="CppSource\ship.cpp" />
   </ItemGroup>
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSource\asteroid.h" />
+    <ClInclude Include="CppSource\bullet.h" />
     <ClInclude Include="CppSource\point.h" />
     <ClInclude Include="CppSource\ship.h" />
   </ItemGroup>

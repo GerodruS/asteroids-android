@@ -51,6 +51,25 @@ Point Ship::getCenter()
 }
 
 
+Point Ship::getBulletStartPosition()
+{
+    Point p;
+    p.x = points[2];
+    p.y = points[3];
+    return p;
+}
+
+
+Point Ship::getBulletStartMove()
+{
+    Point p;
+    p.x = points[2] - points[6];
+    p.y = points[3] - points[7];
+    PointFunctions::normalize(p, 10.0f);
+    return p;
+}
+
+
 void Ship::step()
 {
     const float minX = 500.0f - 300.0f;
