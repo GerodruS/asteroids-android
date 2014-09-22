@@ -43,9 +43,13 @@
     <ClCompile Include="CppSource\bullet.cpp" />
     <ClCompile Include="CppSource\gl_code.cpp" />
     <ClCompile Include="CppSource\ship.cpp" />
+    <ClCompile Include="CppSource\squareButton.cpp" />
+    <ClCompile Include="CppSource\touches.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AndroidApk\AndroidManifest.xml" />
+    <None Include="AndroidApk\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="AndroidApk\build.xml" />
     <None Include="AndroidApk\project.properties" />
     <None Include="AndroidApk\res\values\strings.xml" />
@@ -58,6 +62,8 @@
     <ClInclude Include="CppSource\bullet.h" />
     <ClInclude Include="CppSource\point.h" />
     <ClInclude Include="CppSource\ship.h" />
+    <ClInclude Include="CppSource\squareButton.h" />
+    <ClInclude Include="CppSource\touches.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,6 +24,12 @@
     <ClCompile Include="CppSource\bullet.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\touches.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\squareButton.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -59,6 +65,12 @@
       <Filter>CppSource</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\bullet.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\touches.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\squareButton.h">
       <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>

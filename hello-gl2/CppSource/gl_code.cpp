@@ -28,14 +28,40 @@
 #include <vector>
 #include <string>
 #include <time.h>
+#include <map>
 
 #include "asteroid.h"
 #include "bullet.h"
 #include "ship.h"
+#include "squareButton.h"
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
+struct Color
+{
+    float r;
+    float g;
+    float b;
+    float a;
+};
+
+int screen_width, screen_height;
+float game_width, game_height;
+
+float widthFromScreenToGame(float value)
+{
+    return (value - screen_width / 2.0f) * game_width / screen_width;
+}
+
+float heightFromScreenToGame(float value)
+{
+    return (screen_height - value - screen_height / 2.0f) * game_height / screen_height;
+}
+
+std::vector<SquareButton> buttons;
+bool isLandscape;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -80,6 +106,8 @@ static const char gFragmentShader[] =
     "  gl_FragColor = v_color;\n"
     //"  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
     "}\n";
+
+std::map<int, Point> touches;
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
@@ -197,8 +225,6 @@ GLfloat gTriangleVertices[] = {
 std::vector<Asteroid> asteroids;
 std::vector<Bullet> bullets;
 Ship ship;
-int screen_width;
-int screen_height;
 time_t time_prev;
 
 void setPoint(Point& point, float value, float radius)
@@ -259,8 +285,24 @@ bool setupGraphics(int w, int h)
 {
     time(&time_prev);
 
+    w = w < 0 ? -w : w;
+    h = h < 0 ? -h : h;
+
     screen_width = w;
     screen_height = h;
+    ratioValue = (float)h / (float)w;
+    isLandscape = h < w;
+
+    if (isLandscape)
+    {
+        game_height = 1000.0f;
+        game_width = game_height / ratioValue;
+    }
+    else
+    {
+        game_width = 1000.0f;
+        game_height = game_width * ratioValue;
+    }
 
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
@@ -280,7 +322,6 @@ bool setupGraphics(int w, int h)
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
 
-    ratioValue = (float)h / (float)w;
     ratioID = glGetUniformLocation(gProgram, "ratio");
     checkGlError("glGetAttribLocation");
 
@@ -292,11 +333,11 @@ bool setupGraphics(int w, int h)
     scaleYID = glGetUniformLocation(gProgram, "scaleY");
     checkGlError("glGetAttribLocation");
 
-    xzeroValue = fieldSize / 2.0f;
+    xzeroValue = 0.0f; // fieldSize / 2.0f;
     xzeroID = glGetUniformLocation(gProgram, "x_zero");
     checkGlError("glGetAttribLocation");
 
-    yzeroValue = fieldSize / 2.0f;
+    yzeroValue = 0.0f; // fieldSize / 2.0f;
     yzeroID = glGetUniformLocation(gProgram, "y_zero");
     checkGlError("glGetAttribLocation");
 
@@ -328,6 +369,46 @@ bool setupGraphics(int w, int h)
         generateAsteroid();
     }
     */
+
+    buttons.resize(4);
+    SquareButton& btnLeft = buttons[0];
+    SquareButton& btnRight = buttons[1];
+    SquareButton& btnFire = buttons[2];
+    SquareButton& btnMove = buttons[3];
+    if (isLandscape)
+    {
+        const float halfWidth = game_width / 2.0f;
+        const float quarterHeight = game_height / 4.0f;
+
+        btnLeft.setPosition(-halfWidth, -quarterHeight);
+        btnLeft.setSize(quarterHeight, quarterHeight);
+
+        btnRight.setPosition(-halfWidth + quarterHeight, -2.0f * quarterHeight);
+        btnRight.setSize(quarterHeight, quarterHeight);
+
+        btnFire.setPosition(halfWidth - quarterHeight, -quarterHeight);
+        btnFire.setSize(quarterHeight, quarterHeight);
+
+        btnMove.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
+        btnMove.setSize(quarterHeight, quarterHeight);
+    }
+    else
+    {
+        const float halfHeight = game_height / 2.0f;
+        const float quarterWidth = game_width / 4.0f;
+
+        btnLeft.setPosition(-game_width / 2.0f, -halfHeight + quarterWidth);
+        btnLeft.setSize(quarterWidth, quarterWidth);
+
+        btnRight.setPosition(-quarterWidth, -halfHeight);
+        btnRight.setSize(quarterWidth, quarterWidth);
+
+        btnFire.setPosition(0.0f, -halfHeight + 500);
+        btnFire.setSize(quarterWidth, quarterWidth);
+
+        btnMove.setPosition(quarterWidth, -halfHeight + quarterWidth);
+        btnMove.setSize(quarterWidth, quarterWidth);
+    }
 
     return true;
 }
@@ -376,7 +457,6 @@ void drawAsteroid(std::vector<float>& modelpoints)
     glEnableVertexAttribArray(colorID);
     checkGlError("glEnableVertexAttribArray");
 
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
     gVerticesIndexs[count * 3 - 1] = 1;
 
     glDrawElements(GL_TRIANGLES, 3 * count, GL_UNSIGNED_SHORT, gVerticesIndexs);
@@ -386,85 +466,136 @@ void drawAsteroid(std::vector<float>& modelpoints)
 
     glDisableVertexAttribArray(gvPositionHandle);
     glDisableVertexAttribArray(colorID);
+}
 
-    /*
-    int size = modelpoints.size();
-    GLsizei count = size / 2 - 1;
+void drawTriangles(GLfloat* points, GLushort* indexes, GLfloat* colors, GLsizei countPoints)
+{
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, points);
+    glEnableVertexAttribArray(gvPositionHandle);
 
-    points[4] = modelpoints[size - 2];
-    points[5] = modelpoints[size - 1];
+    glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, colors);
+    glEnableVertexAttribArray(colorID);
 
-    for (int i = 0; i < count; ++i)
+    glDrawElements(GL_TRIANGLES, countPoints, GL_UNSIGNED_SHORT, indexes);
+    checkGlError("glDrawElements");
+
+    glDisableVertexAttribArray(gvPositionHandle);
+    glDisableVertexAttribArray(colorID);
+}
+
+void drawButtons()
+{
+    const unsigned countButtons = buttons.size();
+    for (unsigned i = 0; i < countButtons; ++i)
     {
-        for (int j = 0; j < 4; ++j)
-        {
-            points[j] = modelpoints[(j + i * 2) % (size - 2)];
-        }
-        
-        switch (i % 6)
-        {
-        case 0:
-            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        case 1:
-            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        case 2:
-            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        case 3:
-            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 0.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        case 4:
-            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 0.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        case 5:
-            colorValue[0] = colorValue[4] = colorValue[8] = 0.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        default:
-            colorValue[0] = colorValue[4] = colorValue[8] = 1.0f;
-            colorValue[1] = colorValue[5] = colorValue[9] = 1.0f;
-            colorValue[2] = colorValue[6] = colorValue[10] = 1.0f;
-            colorValue[3] = colorValue[7] = colorValue[11] = 1.0f;
-            break;
-        }
-        
-        GLfloat* pnt = &(points[0]);
-        glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, pnt);
-        checkGlError("glVertexAttribPointer");
-        glEnableVertexAttribArray(gvPositionHandle);
-        checkGlError("glEnableVertexAttribArray");
-
-        glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, colorValue);
-        checkGlError("glVertexAttribPointer");
-        glEnableVertexAttribArray(colorID);
-        checkGlError("glEnableVertexAttribArray");
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        checkGlError("glDrawArrays");
-
-        glDisableVertexAttribArray(gvPositionHandle);
-        glDisableVertexAttribArray(colorID);
+        bool r = buttons[i].check(touches);
+        buttons[i].setIsPress(r);
     }
-    */
+
+    std::vector<Point> points(4 * countButtons);
+    std::vector<GLushort> indexes(6 * countButtons);
+    std::vector<Color> colors(4 * countButtons);
+    
+    for (unsigned i = 0; i < countButtons; ++i)
+    {
+        const Point& pos = buttons[i].getPosition();
+        const Point& size = buttons[i].getSize();
+
+        points[4 * i + 0] = pos;
+
+        points[4 * i + 1] = pos;
+        points[4 * i + 1].x += size.x;
+
+        points[4 * i + 2] = pos;
+        points[4 * i + 2].x += size.x;
+        points[4 * i + 2].y += size.y;
+
+        points[4 * i + 3] = pos;
+        points[4 * i + 3].y += size.y;
+
+        indexes[6 * i + 0] = 4 * i + 0;
+        indexes[6 * i + 1] = 4 * i + 1;
+        indexes[6 * i + 2] = 4 * i + 2;
+
+        indexes[6 * i + 3] = 4 * i + 0;
+        indexes[6 * i + 4] = 4 * i + 3;
+        indexes[6 * i + 5] = 4 * i + 2;
+
+        Color c = { 0.0f, 0.0f, 0.0f, 1.0f };
+        if (buttons[i].isPress())
+        {
+            c.r = 1.0f;
+        }
+        else
+        {
+            c.b = 1.0f;
+        }
+        for (unsigned j = 0; j < 4; ++j)
+        {
+            colors[4 * i + j] = c;
+        }
+    }
+
+    drawTriangles((GLfloat*)&(points[0]), &(indexes[0]), (GLfloat*)&(colors[0]), 6 * countButtons);
+}
+
+
+void rotate(float  x_in, float  y_in,
+    float& x_out, float& y_out,
+    float  angle)
+{
+    angle *= 0.0174532925f;
+
+    x_out = x_in * cos(angle) - y_in * sin(angle);
+    y_out = x_in * sin(angle) + y_in * cos(angle);
+}
+
+
+void rotate(float  x_in, float  y_in,
+    float  x_center, float  y_center,
+    float& x_out, float& y_out,
+    float  angle)
+{
+    x_in -= x_center;
+    y_in -= y_center;
+
+    rotate(x_in, y_in, x_out, y_out, angle);
+
+    x_out += x_center;
+    y_out += y_center;
+}
+
+
+void rotate(std::vector<float>& point, float angle)
+{
+    int count = point.size();
+    float x_center = point[count - 2];
+    float y_center = point[count - 1];
+    float x, y;
+    for (int i = 0; i < count; i += 2)
+    {
+        rotate(point[i], point[i + 1], x_center, y_center, x, y, angle);
+        point[i] = x;
+        point[i + 1] = y;
+    }
+}
+
+
+void rotate(Point& point, const Point& center, float angle)
+{
+    float x, y;
+    rotate(point.x, point.y, center.x, center.y, x, y, angle);
+    point.x = x;
+    point.y = y;
+}
+
+
+void rotate(Point& point, float angle)
+{
+    float x, y;
+    rotate(point.x, point.y, x, y, angle);
+    point.x = x;
+    point.y = y;
 }
 
 float time_cooldown = 3.0f;
@@ -586,70 +717,53 @@ void renderFrame()
     }
     */
     //
-}
+    drawButtons();
 
-
-void rotate(float  x_in, float  y_in,
-    float& x_out, float& y_out,
-    float  angle)
-{
-    angle *= 0.0174532925f;
-
-    x_out = x_in * cos(angle) - y_in * sin(angle);
-    y_out = x_in * sin(angle) + y_in * cos(angle);
-}
-
-
-void rotate(float  x_in,     float  y_in,
-            float  x_center, float  y_center,
-            float& x_out,    float& y_out,
-            float  angle)
-{
-    x_in -= x_center;
-    y_in -= y_center;
-
-    rotate(x_in, y_in, x_out, y_out, angle);
-
-    x_out += x_center;
-    y_out += y_center;
-}
-
-
-void rotate(std::vector<float>& point, float angle)
-{
-    int count = point.size();
-    float x_center = point[count - 2];
-    float y_center = point[count - 1];
-    float x, y;
-    for (int i = 0; i < count; i += 2)
     {
-        rotate(point[i], point[i + 1], x_center, y_center, x, y, angle);
-        point[i] = x;
-        point[i + 1] = y;
+        float angle = 10.0f;
+        float speed = 10.0f;
+        if (buttons[0].isPress())
+        {
+            rotate(ship.points, angle);
+            //Point center = ship.getCenter();
+            rotate(ship.direction, angle);
+        }
+        else if (buttons[1].isPress())
+        {
+            rotate(ship.points, -angle);
+            //Point center = ship.getCenter();
+            rotate(ship.direction, -angle);
+        }
+        
+        if (buttons[2].isPress())
+        {
+            ship.move(ship.direction.x * speed, ship.direction.y * speed);
+        }
+        
+        if (buttons[3].isPress())
+        {
+            //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
+            // fire
+            Bullet bullet_tmp;
+            bullets.push_back(bullet_tmp);
+            Bullet& bullet = bullets[bullets.size() - 1];
+
+            Point startPosition = ship.getBulletStartPosition();
+            bullet.setPosition(startPosition.x, startPosition.y);
+            Point velocity = ship.getBulletStartMove();
+            bullet.setVelocity(velocity.x, velocity.y);
+        }
     }
 }
 
 
-void rotate(Point& point, const Point& center, float angle)
+void touchDown(int id, float x, float y)
 {
-    float x, y;
-    rotate(point.x, point.y, center.x, center.y, x, y, angle);
-    point.x = x;
-    point.y = y;
-}
-
-
-void rotate(Point& point, float angle)
-{
-    float x, y;
-    rotate(point.x, point.y, x, y, angle);
-    point.x = x;
-    point.y = y;
-}
-
-
-void touchDown(float x, float y)
-{
+    Point p;
+    p.x = widthFromScreenToGame(x);
+    p.y = heightFromScreenToGame(y);
+    touches[id] = p;
+    /*
     y = screen_height - y;
     if (0 <= y && y < 300)
     {
@@ -685,40 +799,22 @@ void touchDown(float x, float y)
             bullet.setVelocity(velocity.x, velocity.y);
         }
     }
+    */
     //ship.move(x - (screen_width / 2.0), -(y - (screen_height / 2.0)));
 }
 
 
-void touchMove(float x, float y)
+void touchMove(int id, float x, float y)
 {
+    Point& p = touches[id];
+    p.x = widthFromScreenToGame(x);
+    p.y = heightFromScreenToGame(y);
 }
 
 
-void touchUp(float x, float y)
+void touchUp(int id, float x, float y)
 {
-    //y = screen_height / 2.0 - y;
-    /*
-    if (0 <= y && y < 300)
-    {
-        if (0 <= x && x < 300)
-        {
-            ship.move(-10, 0);
-        }
-        else if (300 <= x && x < 600)
-        {
-            ship.move(10, 0);
-        }
-        else if (600 <= x && x < 900)
-        {
-            ship.move(0, -10);
-        }
-        else if (900 <= x && x < 1200)
-        {
-            ship.move(0, 10);
-        }
-    }
-    */
-    //ship.move(-(x - (screen_width / 2.0)), y - (screen_height / 2.0));
+    touches.erase(id);
 }
 
 
@@ -726,9 +822,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height);
     JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
 
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jfloat x, jfloat y);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jfloat x, jfloat y);
-    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
 };
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
@@ -741,23 +837,26 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobj
     renderFrame();
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
 {
+    int id = tid;
     float x = jx;
     float y = jy;
-    touchDown(x, y);
+    touchDown(id, x, y);
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
 {
+    int id = tid;
     float x = jx;
     float y = jy;
-    touchMove(x, y);
+    touchMove(id, x, y);
 }
 
-JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jfloat jx, jfloat jy)
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
 {
+    int id = tid;
     float x = jx;
     float y = jy;
-    touchUp(x, y);
+    touchUp(id, x, y);
 }

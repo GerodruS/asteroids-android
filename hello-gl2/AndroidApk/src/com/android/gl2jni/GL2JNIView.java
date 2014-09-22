@@ -78,23 +78,96 @@ class GL2JNIView extends GLSurfaceView {
         init(translucent, depth, stencil);
     }
 
+    @Override
     public boolean onTouchEvent(final MotionEvent event) {
-		int Action = event.getAction();
-        switch(Action)
-        {
+        // get pointer index from the event object
+        int pointerIndex = event.getActionIndex();
+
+        // get pointer ID
+        int pointerId = event.getPointerId(pointerIndex);
+
+        // get masked (not specific to a pointer) action
+        int maskedAction = event.getActionMasked();
+
+        switch (maskedAction) {
             case MotionEvent.ACTION_DOWN:
-            	GL2JNILib.actionDown(event.getX(), event.getY());
-            break;
-            case MotionEvent.ACTION_MOVE:
-            	GL2JNILib.actionMove(event.getX(), event.getY());
-            break;
+            case MotionEvent.ACTION_POINTER_DOWN: {
+              GL2JNILib.actionDown(pointerId, event.getX(pointerIndex), event.getY(pointerIndex));
+              break;
+            }
+            case MotionEvent.ACTION_MOVE: { // a pointer was moved
+              for (int size = event.getPointerCount(), i = 0; i < size; i++) {
+
+                GL2JNILib.actionMove(event.getPointerId(i), event.getX(i), event.getY(i));
+             
+              }
+              break;
+            }
             case MotionEvent.ACTION_UP:
-            	GL2JNILib.actionUp(event.getX(), event.getY());
-            break;
+            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_CANCEL: {
+              GL2JNILib.actionUp(pointerId, event.getX(pointerIndex), event.getY(pointerIndex));
+              break;
+            }
         }
-        
+        invalidate();
+        /*
+		int Action = event.getAction();
+        final int pointerCount = event.getPointerCount();
+        for (int i = 0; i < pointerCount; ++i) {
+            int touchID = event.getPointerId(i);
+            switch(Action)
+            {
+                case MotionEvent.ACTION_DOWN:
+            	    GL2JNILib.actionDown(touchID, event.getX(i), event.getY(i));
+                break;
+                case MotionEvent.ACTION_MOVE:
+            	    GL2JNILib.actionMove(touchID, event.getX(i), event.getY(i));
+                break;
+                case MotionEvent.ACTION_UP:
+            	    GL2JNILib.actionUp(touchID, event.getX(i), event.getY(i));
+                break;
+            }
+        }
+        */
         return true;
     }
+
+    /*
+    public boolean onTouchEvent(MotionEvent event) {
+
+    // get pointer index from the event object
+    int pointerIndex = event.getActionIndex();
+
+    // get pointer ID
+    int pointerId = event.getPointerId(pointerIndex);
+
+    // get masked (not specific to a pointer) action
+    int maskedAction = event.getActionMasked();
+
+    switch (maskedAction) {
+
+    case MotionEvent.ACTION_DOWN:
+    case MotionEvent.ACTION_POINTER_DOWN: {
+      // TODO use data
+      break;
+    }
+    case MotionEvent.ACTION_MOVE: { // a pointer was moved
+      // TODO use data
+      break;
+    }
+    case MotionEvent.ACTION_UP:
+    case MotionEvent.ACTION_POINTER_UP:
+    case MotionEvent.ACTION_CANCEL: {
+      // TODO use data
+      break;
+    }
+    }
+    invalidate();
+
+    return true;
+} 
+    */
 
     private void init(boolean translucent, int depth, int stencil) {
 
