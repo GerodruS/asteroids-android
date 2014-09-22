@@ -1,5 +1,99 @@
-#include "asteroid.h"
+#include "asteroidNew.h"
 
+#include <stdlib.h>
+
+using std::vector;
+
+
+Asteroid::Asteroid()
+{
+}
+
+
+void Asteroid::generate(const int countMin,
+                        const int countMax,
+                        const float radiusMin,
+                        const float radiusMax)
+{
+    const int   maxvalueInt = 1000;
+    const float maxvalueFlt = 100.0f;
+
+    const int count = countMin + rand() % (countMax - countMin);
+
+    vector<float> angles(count);
+    float summ = 0.0f;
+    for (int i = 0; i < count; ++i)
+    {
+        float value = 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
+        value += 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
+        value += 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
+        
+        angles[i] = value;
+        summ += value;
+    }
+    for (int i = 0; i < count; ++i)
+    {
+        angles[i] *= 4.0f / summ;
+    }
+
+    points_.resize(count + 1);
+
+    float angleCurrent = 0.0f;
+
+    points_[0] = pointZero;
+    points_[1] = pointOne;
+
+    for (int i = 0; i < count - 1; ++i)
+    {
+        float a = angles[i];
+        angleCurrent += a;
+        if (0.0f < angleCurrent && angleCurrent <= 1.0f)
+        {
+            points_[i + 2].x = 1.0f;
+            points_[i + 2].y = 1.0f - angleCurrent;
+        }
+        else if (1.0f < angleCurrent && angleCurrent <= 2.0f)
+        {
+            points_[i + 2].x = 2.0f - angleCurrent;
+            points_[i + 2].y = 0.0f;
+        }
+        else if (2.0f < angleCurrent && angleCurrent <= 3.0f)
+        {
+            points_[i + 2].x = 0.0f;
+            points_[i + 2].y = angleCurrent - 2.0f;
+        }
+        else if (3.0f < angleCurrent)
+        {
+            points_[i + 2].x = angleCurrent - 3.0;
+            points_[i + 2].y = 1.0f;
+        }
+    }
+
+    for (int i = 1; i < count + 1; ++i)
+    {
+        float r = radiusMin + rand() % int(radiusMax - radiusMin);
+        PointFunctions::normalize(points_[i], r);
+    }
+
+    radiusMin_ = 0.0f;
+    radiusMax_ = 0.0f;
+    const Point& center = points_[0];
+    for (int i = 1; i < count + 1; ++i)
+    {
+        const Point& pnt = points_[i];
+        float r = PointFunctions::distance(pnt, center);
+        if (r < radiusMin_ || 0.0f == radiusMin_)
+        {
+            radiusMin_ = r;
+        }
+        if (radiusMax_ < r || 0.0f == radiusMax_)
+        {
+            radiusMax_ = r;
+        }
+    }
+}
+
+/*
 #include <stdlib.h>
 #include <math.h>
 
@@ -344,3 +438,4 @@ void AsteroidOld::rotate(float  x_in, float  y_in,
     x_out = x_in * cos(angle) - y_in * sin(angle);
     y_out = x_in * sin(angle) + y_in * cos(angle);
 }
+*/

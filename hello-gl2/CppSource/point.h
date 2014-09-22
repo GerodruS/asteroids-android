@@ -9,6 +9,7 @@ struct Point
 };
 
 static const Point pointZero = { 0.0f, 0.0f };
+static const Point pointOne = { 1.0f, 1.0f };
 
 struct PointFunctions
 {

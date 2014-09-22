@@ -222,7 +222,7 @@ GLfloat gTriangleVertices[] = {
     10.0f, 790.0f,
     1790.0f, 10.0f };
 
-std::vector<Asteroid> asteroids;
+std::vector<AsteroidOld> asteroids;
 std::vector<Bullet> bullets;
 Ship ship;
 time_t time_prev;
@@ -251,7 +251,7 @@ void setPoint(Point& point, float value, float radius)
     }
 }
 
-void generateAsteroid()
+void generateAsteroidOld()
 {
     float radius = 500.0f;
     Point positionFrom, positionTo;
@@ -264,17 +264,17 @@ void generateAsteroid()
     }
     setPoint(positionTo, d, radius);
 
-    Asteroid asteroidNew_temp;
+    AsteroidOld asteroidNew_temp;
     int index = asteroids.size();
     asteroids.push_back(asteroidNew_temp);
-    Asteroid& asteroidNew = asteroids[index];
+    AsteroidOld& asteroidNew = asteroids[index];
     //asteroidNew.setPosition(positionFrom.x + (screen_width - radius) / 2.0f, positionFrom.y + (screen_height - radius) / 2.0f);
     asteroidNew.setPosition(positionFrom.x + 500 - radius / 2.0f, positionFrom.y + 500 - radius / 2.0f);
 
     positionTo.x -= positionFrom.x;
     positionTo.y -= positionFrom.y;
-    const float velocityAsteroid = 2.0f;
-    PointFunctions::normalize(positionTo, velocityAsteroid);
+    const float velocityAsteroidOld = 2.0f;
+    PointFunctions::normalize(positionTo, velocityAsteroidOld);
 
     //positionTo.x = 1;
     //positionTo.y = 1;
@@ -351,10 +351,10 @@ bool setupGraphics(int w, int h)
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
     /*
-    asteroids.push_back(Asteroid(6));
-    asteroids.push_back(Asteroid(6));
-    asteroids.push_back(Asteroid(6));
-    asteroids.push_back(Asteroid(6));
+    asteroids.push_back(AsteroidOld(6));
+    asteroids.push_back(AsteroidOld(6));
+    asteroids.push_back(AsteroidOld(6));
+    asteroids.push_back(AsteroidOld(6));
 
     asteroids[0].move( 300.0f,  200.0f);
     asteroids[1].move(-300.0f,  200.0f);
@@ -366,7 +366,7 @@ bool setupGraphics(int w, int h)
     /*
     for (int i = 0; i < 100; ++i)
     {
-        generateAsteroid();
+        generateAsteroidOld();
     }
     */
 
@@ -441,7 +441,7 @@ GLushort gVerticesIndexs[] = {
     0, 19, 20
 };
 
-void drawAsteroid(std::vector<float>& modelpoints)
+void drawAsteroidOld(std::vector<float>& modelpoints)
 {
     int size = modelpoints.size();
     GLsizei count = size / 2 - 1;
@@ -643,7 +643,7 @@ void renderFrame()
         }
         else
         {
-            drawAsteroid(asteroids[i].points);
+            drawAsteroidOld(asteroids[i].points);
         }
     }
     for (int i = 0; i < bullets.size(); ++i)
@@ -658,10 +658,10 @@ void renderFrame()
         }
         else
         {
-            drawAsteroid(bullets[i].points);
+            drawAsteroidOld(bullets[i].points);
         }
     }
-    drawAsteroid(ship.points);
+    drawAsteroidOld(ship.points);
     ship.step();
 
     if (0.0f < time_remain)
@@ -670,7 +670,7 @@ void renderFrame()
     }
     else
     {
-        generateAsteroid();
+        generateAsteroidOld();
         time_remain = time_cooldown;
     }
 
@@ -701,8 +701,8 @@ void renderFrame()
         {
             if (asteroids[i].asteroidIntersect(asteroids[j]))
             {
-                generateAsteroid();
-                generateAsteroid();
+                generateAsteroidOld();
+                generateAsteroidOld();
 
                 asteroids.erase(asteroids.begin() + i);
                 asteroids.erase(asteroids.begin() + j);

@@ -1,5 +1,23 @@
 #pragma once
 
+#include "gameObject.h"
+
+class Asteroid : public GameObject
+{
+public:
+    Asteroid();
+
+    void generate(const int countMin,
+                  const int countMax,
+                  const float radiusMin,
+                  const float radiusMax);
+
+private:
+    float radiusMin_;
+    float radiusMax_;
+};
+
+/*
 #include <vector>
 
 #include "point.h"
@@ -47,3 +65,4 @@ public:
 
     void rotate(float angle);
 };
+*/
