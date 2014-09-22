@@ -30,6 +30,9 @@
     <ClCompile Include="CppSource\squareButton.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\gameObject.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -71,6 +74,9 @@
       <Filter>CppSource</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\squareButton.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\gameObject.h">
       <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>

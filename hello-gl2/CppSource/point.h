@@ -8,6 +8,7 @@ struct Point
     float y;
 };
 
+static const Point pointZero = { 0.0f, 0.0f };
 
 struct PointFunctions
 {
@@ -52,5 +53,37 @@ struct PointFunctions
         float l = length(point);
         point.x *= value / l;
         point.y *= value / l;
+    }
+
+    static void rotate(Point& point, const Point& center, const float angle)
+    {
+        rotate(point.x, point.y, center.x, center.y, angle);
+    }
+
+    static void rotate(float& x, float& y, float centerX, float centerY, float angle)
+    {
+        x -= centerX;
+        y -= centerY;
+
+        rotate(x, y, angle);
+
+        x += centerX;
+        y += centerY;
+    }
+
+    static void rotate(Point& point, const float angle)
+    {
+        rotate(point.x, point.y, angle);
+    }
+
+    static void rotate(float& x, float& y, float angle)
+    {
+        angle *= 0.0174532925f;
+
+        const float resX = x * cos(angle) - y * sin(angle);
+        const float resY = x * sin(angle) + y * cos(angle);
+
+        x = resX;
+        y = resY;
     }
 };
