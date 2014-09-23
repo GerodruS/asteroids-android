@@ -45,6 +45,12 @@
     <ClCompile Include="CppSource\game.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\touchManager.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\asteroidsGenerator.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -101,6 +107,12 @@
       <Filter>CppSource</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\game.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\touchManager.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\asteroidsGenerator.h">
       <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,11 +18,12 @@ void SquareButton::setIsPress(const bool value)
 }
 
 
-bool SquareButton::check(const Touches& touches) const
+bool SquareButton::check(const vector<Point>& touches) const
 {
     bool r = false;
-    for (Touches::const_iterator it = touches.begin(); it != touches.end() && !r; ++it) {
-        r = check(it->second);
+    const unsigned count = touches.size();
+    for (unsigned i = 0; i < count && !r; ++i) {
+        r = check(touches[i]);
     }
     return r;
 }

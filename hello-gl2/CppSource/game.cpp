@@ -66,14 +66,54 @@ void Game::init()
 
 void Game::step()
 {
+    {
+        const unsigned countButtons = buttons_.size();
+        const std::vector<Point>& touchesList = touchManager_.getTouches();
+        for (unsigned i = 0; i < countButtons; ++i)
+        {
+            bool r = buttons_[i].check(touchesList);
+            buttons_[i].setIsPress(r);
+        }
+    }
+    {
+
+    }
 }
 
 
 void Game::render()
 {
-    {
-
-    }
     painter_.drawPrepare();
     painter_.drawSquareButton(buttons_);
+}
+
+
+void Game::touchDown(int id, float x, float y)
+{
+    touchManager_.touchDown(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
+}
+
+
+void Game::touchMove(int id, float x, float y)
+{
+    touchManager_.touchMove(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
+}
+
+
+void Game::touchUp(int id, float x, float y)
+{
+    touchManager_.touchUp(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
+}
+
+
+float Game::getXFromScreenToGame(float value)
+{
+    const float sw = painter_.getScreenWidth();
+    return (value - sw / 2.0f) * painter_.getGameWidth() / sw;
+}
+
+float Game::getYFromScreenToGame(float value)
+{
+    const float sh = painter_.getScreenHeight();
+    return (sh - value - sh / 2.0f) * painter_.getGameHeight() / sh;
 }

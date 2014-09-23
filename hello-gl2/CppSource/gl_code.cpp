@@ -32,7 +32,7 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env
     int id = tid;
     float x = jx;
     float y = jy;
-    //touchDown(id, x, y);
+    game_.touchDown(id, x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
@@ -40,7 +40,7 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env
     int id = tid;
     float x = jx;
     float y = jy;
-    //touchMove(id, x, y);
+    game_.touchMove(id, x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, 
     int id = tid;
     float x = jx;
     float y = jy;
-    //touchUp(id, x, y);
+    game_.touchUp(id, x, y);
 }
 
 // OpenGL ES 2.0 code

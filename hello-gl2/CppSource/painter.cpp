@@ -209,26 +209,7 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 
 
 void Painter::drawSquareButton(const vector<SquareButton>& buttons)
-{
-    /*
-    points_.resize(3);
-    points_[0] = {   -100500.0f,   100500.0f };
-    points_[1] = { 100500.0f,   -100500.0f };
-    points_[2] = {   100500.0f, 100500.0f };
-
-    indexes_.resize(3);
-    indexes_[0] = 0;
-    indexes_[1] = 1;
-    indexes_[2] = 2;
-
-    colors_.resize(3);
-    colors_[0] = colorGreen;
-    colors_[1] = colorGreen;
-    colors_[2] = colorGreen;
-
-    drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3);
-    */
-    
+{    
     const unsigned countButtons = buttons.size();
 
     points_.resize(4 * countButtons);
@@ -277,5 +258,4 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6 * countButtons);
-    
 }

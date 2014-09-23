@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
-#include "point.h"
+//#include <map>
+//#include "point.h"
 
-typedef std::map<int, Point> Touches;
+//typedef std::map<int, Point> Touches;

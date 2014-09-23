@@ -1,7 +1,7 @@
 #pragma once
 
+#include <vector>
 #include "point.h"
-#include "touches.h"
 
 class SquareButton
 {
@@ -11,7 +11,7 @@ public:
     void setIsPress(const bool value);
     bool isPress() const;
 
-    bool check(const Touches& touches) const;
+    bool check(const std::vector<Point>& touches) const;
     bool check(const Point& touch) const;
 
     void setPosition(const Point& point);
