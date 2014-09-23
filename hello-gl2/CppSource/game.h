@@ -3,7 +3,7 @@
 #include "painter.h"
 #include "squareButton.h"
 #include "touchManager.h"
-#include "asteroidNew.h"
+#include "asteroidsGenerator.h"
 
 class Game
 {
@@ -25,6 +25,7 @@ public:
 private:
     Painter painter_;
     TouchManager touchManager_;
+    AsteroidsGenerator asteroidsGenerator_;
 
     std::vector<SquareButton> buttons_;
     std::vector<Asteroid> asteroids_;

@@ -172,6 +172,25 @@ void Painter::drawPrepare()
 
 void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 {
+    /*
+    points_.resize(3);
+    points_[0] = { -100500.0f, 100500.0f };
+    points_[1] = { 100500.0f, -100500.0f };
+    points_[2] = { 100500.0f, 100500.0f };
+
+    indexes_.resize(3);
+    indexes_[0] = 0;
+    indexes_[1] = 1;
+    indexes_[2] = 2;
+
+    colors_.resize(3);
+    colors_[0] = colorGreen;
+    colors_[1] = colorGreen;
+    colors_[2] = colorGreen;
+
+    drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3);
+    */
+    
     const unsigned countAsteroids = asterods.size();
 
     unsigned edgesCountSum = 0;
@@ -182,10 +201,15 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 
     points_.clear();
     points_.reserve(countAsteroids + edgesCountSum);
+
+    indexes_.clear();
     indexes_.reserve(3 * edgesCountSum);
+
+    colors_.clear();
     colors_.reserve(countAsteroids + edgesCountSum);
 
     const Color& c = colorRed;
+    unsigned startIndex = 0;
     for (unsigned i = 0; i < countAsteroids; ++i)
     {
         const vector<Point>& ps = asterods[i].getPoints();
@@ -194,17 +218,30 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
         const unsigned edgesCount = ps.size() - 1;
         for (unsigned j = 0; j < edgesCount + 1; ++j)
         {
-            colors_.push_back(c);
+            switch (j % 3)
+            {
+            case 0:
+                colors_.push_back(colorRed);
+                break;
+            case 1:
+                colors_.push_back(colorGreen);
+                break;
+            case 2:
+                colors_.push_back(colorBlue);
+                break;
+            }
         }
-        for (unsigned j = 0; j < edgesCount; ++j)
+        for (unsigned j = 1; j <= edgesCount; ++j)
         {
-            indexes_.push_back(i);
-            indexes_.push_back(i + j + 1);
-            indexes_.push_back((i + j + 1) % (edgesCount - 1) + 1);
+            indexes_.push_back(startIndex);
+            indexes_.push_back(startIndex + j);
+            indexes_.push_back(startIndex + j % edgesCount + 1);
         }
+        startIndex += 3 * edgesCount;
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3 * edgesCountSum);
+    
 }
 
 

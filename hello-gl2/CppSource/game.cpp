@@ -17,6 +17,9 @@ void Game::setupGraphics(int width, int height)
 
 void Game::init()
 {
+    asteroidsGenerator_.setFrame(-painter_.getGameWidth() / 2.0f, -painter_.getGameHeight() / 2.0f,
+                                 painter_.getGameWidth(), painter_.getGameHeight());
+
     {
         buttons_.resize(4);
         SquareButton& btnLeft_ = buttons_[0];
@@ -61,6 +64,14 @@ void Game::init()
             btnMove_.setSize(quarterWidth, quarterWidth);
         }
     }
+
+    asteroids_.resize(3);
+    asteroidsGenerator_.generate(asteroids_[0]);
+    asteroidsGenerator_.generate(asteroids_[1]);
+    asteroidsGenerator_.generate(asteroids_[2]);
+    asteroids_[0].setPosition(-500.0f, 0.0f);
+    asteroids_[1].setPosition(0.0f, 0.0f);
+    asteroids_[2].setPosition(500.0f, 0.0f);
 }
 
 
@@ -76,7 +87,12 @@ void Game::step()
         }
     }
     {
-
+        const unsigned count = asteroids_.size();
+        for (unsigned i = 0; i < count; ++i)
+        {
+            //asteroids_[i].step();
+        }
+        //asteroids_.push_back(asteroidsGenerator_.generate());
     }
 }
 
@@ -84,7 +100,18 @@ void Game::step()
 void Game::render()
 {
     painter_.drawPrepare();
-    painter_.drawSquareButton(buttons_);
+    //painter_.drawSquareButton(buttons_);
+
+    painter_.drawAsteroids(asteroids_);
+    /*
+    std::vector<Asteroid> asteroids(1);
+    asteroids[0] = asteroids_[0];
+    painter_.drawAsteroids(asteroids);
+    asteroids[0] = asteroids_[1];
+    painter_.drawAsteroids(asteroids);
+    asteroids[0] = asteroids_[2];
+    painter_.drawAsteroids(asteroids);
+    */
 }
 
 
