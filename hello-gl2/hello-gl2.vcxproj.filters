@@ -36,6 +36,15 @@
     <ClCompile Include="CppSource\asteroidNew.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\painter.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\color.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\game.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -83,6 +92,15 @@
       <Filter>CppSource</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\asteroidNew.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\painter.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\color.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\game.h">
       <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,11 +20,15 @@ public:
     void setAngularVelocity(const float value);
     void addAngularVelocity(const float delta);
 
-    const Point& getPosition() const;
+    virtual const Point& getPosition() const;
     const Point& getVelocity() const;
     float getAngularVelocity() const;
+    const std::vector<Point>& getPoints() const
+    {
+        return points_;
+    };
 
-    void step();
+    virtual void step();
 
     void rotate(const float angle);
 

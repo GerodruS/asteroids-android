@@ -1,21 +1,58 @@
-/*
- * Copyright (C) 2009 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+#include <jni.h>
+
+#include "game.h"
+
+#define  LOG_TAG    "libgl2jni"
+
+Game game_;
+
+extern "C" {
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj, jint width, jint height);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
+
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
+    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jint tid, jfloat x, jfloat y);
+};
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj, jint width, jint height)
+{
+    game_.setupGraphics(width, height);
+    game_.init();
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj)
+{
+    game_.step();
+    game_.render();
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionDown(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
+{
+    int id = tid;
+    float x = jx;
+    float y = jy;
+    //touchDown(id, x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionMove(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
+{
+    int id = tid;
+    float x = jx;
+    float y = jy;
+    //touchMove(id, x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, jobject obj, jint tid, jfloat jx, jfloat jy)
+{
+    int id = tid;
+    float x = jx;
+    float y = jy;
+    //touchUp(id, x, y);
+}
 
 // OpenGL ES 2.0 code
-
+/*
 #include <jni.h>
 #include <android/log.h>
 
@@ -34,18 +71,12 @@
 #include "bullet.h"
 #include "ship.h"
 #include "squareButton.h"
+#include "color.h"
 
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
-struct Color
-{
-    float r;
-    float g;
-    float b;
-    float a;
-};
 
 int screen_width, screen_height;
 float game_width, game_height;
@@ -208,14 +239,6 @@ GLfloat colorValue[] = {
 };
 
 const GLfloat fieldSize = 1000.0f;
-/*
-const struct MyScreen
-{
-    const float width = 800.0f;
-    const float height = 800.0f;
-
-} myScreen;
-*/
 
 GLfloat gTriangleVertices[] = {
     0.0f, 0.0f,
@@ -349,26 +372,8 @@ bool setupGraphics(int w, int h)
 
     //float ratio = (float)w / (float)h;
     //glFrustumx(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-
-    /*
-    asteroids.push_back(AsteroidOld(6));
-    asteroids.push_back(AsteroidOld(6));
-    asteroids.push_back(AsteroidOld(6));
-    asteroids.push_back(AsteroidOld(6));
-
-    asteroids[0].move( 300.0f,  200.0f);
-    asteroids[1].move(-300.0f,  200.0f);
-    asteroids[2].move( 300.0f, -200.0f);
-    asteroids[3].move(-300.0f, -200.0f);
-    */
-
+    
     ship.move(500, 500);
-    /*
-    for (int i = 0; i < 100; ++i)
-    {
-        generateAsteroidOld();
-    }
-    */
 
     buttons.resize(4);
     SquareButton& btnLeft = buttons[0];
@@ -693,29 +698,7 @@ void renderFrame()
             --i;
         }
     }
-    /*
-    for (int i = 0; i < asteroids.size(); ++i)
-    {
-        bool del = false;
-        for (int j = i + 1; j < asteroids.size(); ++j)
-        {
-            if (asteroids[i].asteroidIntersect(asteroids[j]))
-            {
-                generateAsteroidOld();
-                generateAsteroidOld();
-
-                asteroids.erase(asteroids.begin() + i);
-                asteroids.erase(asteroids.begin() + j);
-                del = true;
-                break;
-            }
-        }
-        if (del)
-        {
-            --i;
-        }
-    }
-    */
+    
     //
     drawButtons();
 
@@ -763,43 +746,7 @@ void touchDown(int id, float x, float y)
     p.x = widthFromScreenToGame(x);
     p.y = heightFromScreenToGame(y);
     touches[id] = p;
-    /*
-    y = screen_height - y;
-    if (0 <= y && y < 300)
-    {
-        float angle = 10.0f;
-        float speed = 10.0f;
-        if (0 <= x && x < 300)
-        {
-            rotate(ship.points, angle);
-            //Point center = ship.getCenter();
-            rotate(ship.direction, angle);
-        }
-        else if (300 <= x && x < 600)
-        {
-            rotate(ship.points, -angle);
-            //Point center = ship.getCenter();
-            rotate(ship.direction, -angle);
-        }
-        else if (600 <= x && x < 900)
-        {
-            ship.move(ship.direction.x * speed, ship.direction.y * speed);
-        }
-        else if (900 <= x && x < 1200)
-        {
-            //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
-            // fire
-            Bullet bullet_tmp;
-            bullets.push_back(bullet_tmp);
-            Bullet& bullet = bullets[bullets.size() - 1];
-
-            Point startPosition = ship.getBulletStartPosition();
-            bullet.setPosition(startPosition.x, startPosition.y);
-            Point velocity = ship.getBulletStartMove();
-            bullet.setVelocity(velocity.x, velocity.y);
-        }
-    }
-    */
+    
     //ship.move(x - (screen_width / 2.0), -(y - (screen_height / 2.0)));
 }
 
@@ -860,3 +807,4 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_actionUp(JNIEnv * env, 
     float y = jy;
     touchUp(id, x, y);
 }
+*/

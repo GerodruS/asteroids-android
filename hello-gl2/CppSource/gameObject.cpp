@@ -2,7 +2,7 @@
 
 
 GameObject::GameObject() :
-angularVelocity_(0.0f)
+    angularVelocity_(0.0f)
 {
 }
 
