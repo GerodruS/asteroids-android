@@ -2,7 +2,9 @@
 
 
 GameObject::GameObject() :
-    angularVelocity_(0.0f)
+    velocityMax_({ 100.0f, 100.0f }),
+    angularVelocity_(0.0f),
+    toDel_(false)
 {
 }
 
@@ -39,14 +41,27 @@ void GameObject::moveOn(const Point& delta)
 
 void GameObject::setVelocity(float x, float y)
 {
-    velocity_.x = x;
-    velocity_.y = y;
+    velocity_.x = fminf(x, velocityMax_.x);
+    velocity_.y = fminf(y, velocityMax_.y);
 }
 
 
 void GameObject::setVelocity(const Point& value)
 {
     setVelocity(value.x, value.y);
+}
+
+
+void GameObject::setVelocityMax(float x, float y)
+{
+    velocityMax_.x = x;
+    velocityMax_.y = y;
+}
+
+
+void GameObject::setVelocityMax(const Point& value)
+{
+    setVelocityMax(value.x, value.y);
 }
 
 
@@ -84,6 +99,12 @@ const Point& GameObject::getPosition() const
 const Point& GameObject::getVelocity() const
 {
     return velocity_;
+}
+
+
+const Point& GameObject::getVelocityMax() const
+{
+    return velocityMax_;
 }
 
 

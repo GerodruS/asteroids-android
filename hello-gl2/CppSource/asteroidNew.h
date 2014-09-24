@@ -29,21 +29,16 @@ public:
 
     bool isCollisionWithBullet(std::vector<Bullet>& bullets);
 
-    bool polygonsIntersect(const Point& point);
-    bool polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point);
-
+    bool polygonsIntersect(const Point& point) const;
+    
     void hit()
     {
-        toDel_ = true;
+        setDel(true);
     }
 
-    bool isToDel() const
-    {
-        return toDel_;
-    }
+    int generation;
 
 private:
     float radiusMin_;
     float radiusMax_;
-    bool toDel_;
 };

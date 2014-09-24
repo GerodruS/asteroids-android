@@ -21,16 +21,10 @@ public:
 
     void hit()
     {
-        toDel_ = true;
-    }
-
-    bool isToDel() const
-    {
-        return toDel_;
+        setDel(true);
     }
 
 private:
     float size_;
-    bool toDel_;
 
 };

@@ -10,7 +10,7 @@ public:
     void setFrame(const float positionX, const float positionY,
                   const float sizeX,     const float sizeY);
 
-    void generate(Asteroid& asteroid);
+    void generate(Asteroid& asteroid, const Point* const position = 0);
 
 private:
     Point position_;

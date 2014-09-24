@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gameObject.h"
+#include "asteroidNew.h"
 
 class Ship : public GameObject
 {
@@ -65,9 +66,12 @@ public:
         frameSize_.y = y;
     }
 
+    bool isCollisionWithAsteroid(const Asteroid& asteroid) const;
+
 private:
-    float frictionForce_;
     Point framePositon_;
     Point frameSize_;
+    float frictionForce_;
+    float radiusMax_;
 
 };

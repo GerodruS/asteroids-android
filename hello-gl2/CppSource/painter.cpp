@@ -207,6 +207,7 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
         const unsigned edgesCount = ps.size() - 1;
         for (unsigned j = 0; j < edgesCount + 1; ++j)
         {
+            /*
             switch (j % 3)
             {
             case 0:
@@ -219,6 +220,8 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
                 colors_.push_back(colorBlue);
                 break;
             }
+            */
+            colors_.push_back(c);
         }
         for (unsigned j = 1; j <= edgesCount; ++j)
         {

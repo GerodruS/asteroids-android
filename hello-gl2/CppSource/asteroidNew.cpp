@@ -5,8 +5,7 @@
 using std::vector;
 
 
-Asteroid::Asteroid() :
-    toDel_(false)
+Asteroid::Asteroid()
 {
     points_.push_back(pointZero);
 }
@@ -146,7 +145,7 @@ bool Asteroid::isCollisionWithBullet(vector<Bullet>& bullets)
 }
 
 
-bool Asteroid::polygonsIntersect(const Point& point)
+bool Asteroid::polygonsIntersect(const Point& point) const
 {
     Point a, b, c;
     c = getPosition();
@@ -156,41 +155,11 @@ bool Asteroid::polygonsIntersect(const Point& point)
         int j = (i + 1) % (count) + 1;
         a = points_[i + 1];
         b = points_[j];
-        bool res = polygonIntersect(a, b, c, point);
+        bool res = PointFunctions::polygonIntersect(a, b, c, point);
         if (res)
         {
             return true;
         }
     }
     return false;
-}
-
-
-bool Asteroid::polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point)
-{
-    float xMin = fminf(a.x, fminf(b.x, c.x));
-    float yMin = fminf(a.y, fminf(b.y, c.y));
-    float xMax = fmaxf(a.x, fmaxf(b.x, c.x));
-    float yMax = fmaxf(a.y, fmaxf(b.y, c.y));
-    if (point.x < xMin || xMax < point.x ||
-        point.y < yMin || yMax < point.y)
-    {
-        return false;
-    }
-    else
-    {
-        float sqrA = PointFunctions::polygonSquare(a, b, c);
-        float sqrB = 0.0f;
-        sqrB += PointFunctions::polygonSquare(a, b, point);
-        sqrB += PointFunctions::polygonSquare(b, c, point);
-        sqrB += PointFunctions::polygonSquare(c, a, point);
-        if (fabsf(sqrA - sqrB) < 0.001f)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 }

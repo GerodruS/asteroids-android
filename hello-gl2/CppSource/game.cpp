@@ -8,7 +8,7 @@ using std::vector;
 Game::Game() :
     fieldSize_(1000.0f),
     timeWaitAsteroidNew_(2.0f),
-    timeWaitBullet_(0.2f)
+    timeWaitBullet_(0.5f)
 {
 }
 
@@ -45,11 +45,11 @@ void Game::init()
             btnRight_.setPosition(-halfWidth + quarterHeight, -2.0f * quarterHeight);
             btnRight_.setSize(quarterHeight, quarterHeight);
 
-            btnFire_.setPosition(halfWidth - quarterHeight, -quarterHeight);
-            btnFire_.setSize(quarterHeight, quarterHeight);
-
-            btnMove_.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
+            btnMove_.setPosition(halfWidth - quarterHeight, -quarterHeight);
             btnMove_.setSize(quarterHeight, quarterHeight);
+
+            btnFire_.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
+            btnFire_.setSize(quarterHeight, quarterHeight);
         }
         else
         {
@@ -62,10 +62,10 @@ void Game::init()
             btnRight_.setPosition(-quarterWidth, -halfHeight);
             btnRight_.setSize(quarterWidth, quarterWidth);
 
-            btnFire_.setPosition(0.0f, -halfHeight + 500);
+            btnFire_.setPosition(quarterWidth, -halfHeight + quarterWidth);
             btnFire_.setSize(quarterWidth, quarterWidth);
 
-            btnMove_.setPosition(quarterWidth, -halfHeight + quarterWidth);
+            btnMove_.setPosition(0.0f, -halfHeight + 500);
             btnMove_.setSize(quarterWidth, quarterWidth);
         }
     }
@@ -73,6 +73,7 @@ void Game::init()
     asteroids_.resize(asteroids_.size() + 1);
     asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
 
+    //ship_ = Ship();
     ship_.setPosition(0.0f, 0.0f);
     ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
     ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
@@ -149,6 +150,10 @@ void Game::step()
                 tmrBullet_.setAlarm(timeWaitBullet_);
             }
         }
+        else
+        {
+            tmrBullet_.reset();
+        }
     }
     {
         for (unsigned i = 0; i < bullets_.size(); ++i)
@@ -163,8 +168,23 @@ void Game::step()
             if (asteroids_[i].isCollisionWithBullet(bullets_))
             {
                 asteroids_[i].hit();
-                //asteroids_.erase(asteroids_.begin() + i);
-                //bullets_.erase(bullets_.begin() + j);
+
+                if (1 == asteroids_[i].generation) {
+                    const Point& pos = asteroids_[i].getPosition();
+                    asteroids_.resize(asteroids_.size() + 2);
+
+                    asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 2], &pos);
+                    asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1], &pos);
+
+                }
+            }
+        }
+        for (unsigned i = 0; i < asteroids_.size(); ++i)
+        {
+            if (ship_.isCollisionWithAsteroid(asteroids_[i]))
+            {
+                ship_.setDel(true);
+                asteroids_[i].setDel(true);
             }
         }
     }
@@ -172,7 +192,7 @@ void Game::step()
     {
         for (unsigned i = 0; i < asteroids_.size(); ++i)
         {
-            if (asteroids_[i].isToDel())
+            if (asteroids_[i].isDel())
             {
                 asteroids_.erase(asteroids_.begin() + i);
                 --i;
@@ -180,11 +200,18 @@ void Game::step()
         }
         for (unsigned i = 0; i < bullets_.size(); ++i)
         {
-            if (bullets_[i].isToDel())
+            if (bullets_[i].isDel())
             {
                 bullets_.erase(bullets_.begin() + i);
                 --i;
             }
+        }
+        if (ship_.isDel())
+        {
+            ship_.setDel(false);
+            ship_.setPosition(0.0f, 0.0f);
+            ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
+            ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
         }
     }
 }

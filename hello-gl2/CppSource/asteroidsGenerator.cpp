@@ -24,12 +24,21 @@ void AsteroidsGenerator::setFrame(const float positionX, const float positionY,
 }
 
 
-void AsteroidsGenerator::generate(Asteroid& asteroid)
+void AsteroidsGenerator::generate(Asteroid& asteroid, const Point* const position)
 {
-    asteroid.generate(edgeCountMin_, edgeCountMax_, radiusMin_, radiusMax_);
+    if (position != 0) {
+        asteroid.generate(edgeCountMin_, edgeCountMax_, radiusMin_ / 2.0f, radiusMax_ / 2.0f);
+    }
+    else {
+        asteroid.generate(edgeCountMin_, edgeCountMax_, radiusMin_, radiusMax_);
+    }
 
     Point pointFrom, pointTo;
     getPoints(pointFrom, pointTo);
+
+    if (position != 0) {
+        pointFrom = *position;
+    }
     
     asteroid.setPosition(pointFrom);
 
@@ -37,12 +46,29 @@ void AsteroidsGenerator::generate(Asteroid& asteroid)
     pointTo.y -= pointFrom.y;
 
     const float velocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
-    PointFunctions::normalize(pointTo, velocity);
+
+    if (position != 0) {
+        PointFunctions::normalize(pointTo, 2.0f * velocity);
+    }
+    else {
+        PointFunctions::normalize(pointTo, velocity);
+    }
+
 
     asteroid.setVelocity(pointTo.x, pointTo.y);
 
     const float angularVelocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
-    asteroid.setAngularVelocity(angularVelocity);
+
+
+    if (position != 0) {
+        asteroid.setAngularVelocity(2.0f * angularVelocity);
+        asteroid.generation = 2;
+    }
+    else {
+        asteroid.setAngularVelocity(angularVelocity);
+        asteroid.generation = 1;
+    }
+
 }
 
 

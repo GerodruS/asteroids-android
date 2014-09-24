@@ -87,4 +87,36 @@ struct PointFunctions
         x = resX;
         y = resY;
     }
+
+    static bool polygonIntersect(const Point& a,
+                                 const Point& b,
+                                 const Point& c,
+                                 const Point& point)
+    {
+        float xMin = fminf(a.x, fminf(b.x, c.x));
+        float yMin = fminf(a.y, fminf(b.y, c.y));
+        float xMax = fmaxf(a.x, fmaxf(b.x, c.x));
+        float yMax = fmaxf(a.y, fmaxf(b.y, c.y));
+        if (point.x < xMin || xMax < point.x ||
+            point.y < yMin || yMax < point.y)
+        {
+            return false;
+        }
+        else
+        {
+            float sqrA = PointFunctions::polygonSquare(a, b, c);
+            float sqrB = 0.0f;
+            sqrB += PointFunctions::polygonSquare(a, b, point);
+            sqrB += PointFunctions::polygonSquare(b, c, point);
+            sqrB += PointFunctions::polygonSquare(c, a, point);
+            if (fabsf(sqrA - sqrB) < 0.001f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 };

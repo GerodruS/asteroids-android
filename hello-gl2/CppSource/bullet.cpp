@@ -2,8 +2,7 @@
 
 
 Bullet::Bullet() :
-    size_(10.0f),
-    toDel_(false)
+    size_(10.0f)
 {
     points_.resize(4);
 
