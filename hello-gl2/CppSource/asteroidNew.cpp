@@ -16,13 +16,10 @@ void Asteroid::generate(const int edgeCountMin,
                         const float radiusMin,
                         const float radiusMax)
 {
-    srand(0);
-
     const int   maxvalueInt = 1000;
     const float maxvalueFlt = 100.0f;
 
-    //const int count = edgeCountMin + rand() % (edgeCountMax - edgeCountMin);
-    const int count = 3;
+    const int count = edgeCountMin + rand() % (edgeCountMax - edgeCountMin);
 
     vector<float> angles(count);
     float summ = 0.0f;

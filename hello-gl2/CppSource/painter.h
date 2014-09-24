@@ -13,12 +13,20 @@ class Painter
 public:
     Painter();
 
-    void setupGraphics(int width, int height);
+    void setupGraphics(float fieldSize, int width, int height);
 
     void drawPrepare();
     void drawAsteroids(const std::vector<Asteroid>& asterods);
     void drawSquareButton(const std::vector<SquareButton>& buttons);
 
+    void setFieldSize(float value)
+    {
+        fieldSize_ = value;
+    };
+    float getFieldSize() const
+    {
+        return fieldSize_;
+    };
     float getScreenWidth() const
     {
         return screenWidth_;
@@ -43,6 +51,13 @@ public:
     {
         return isLandscape_;
     };
+
+    float getXFromScreenToGame(float value);
+    float getYFromScreenToGame(float value);
+    float getXFromGameToScreen(float value);
+    float getYFromGameToScreen(float value);
+    float getWidthFromGameToScreen(float value);
+    float getHeightFromGameToScreen(float value);
 
 private:
     std::vector<Point> points_;

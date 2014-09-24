@@ -5,8 +5,8 @@
 AsteroidsGenerator::AsteroidsGenerator() :
     edgeCountMin_(6),
     edgeCountMax_(12),
-    radiusMin_(100),
-    radiusMax_(300),
+    radiusMin_(10),
+    radiusMax_(30),
     velocityMin_(1),
     velocityMax_(3)
 {
@@ -62,7 +62,11 @@ float AsteroidsGenerator::getPosition()
 float AsteroidsGenerator::getPosition(float from)
 {
     float halfPerimeter = size_.x + size_.y;
-    return from + halfPerimeter + (rand() % int(halfPerimeter) - halfPerimeter / 2.0f);
+    float res = from + halfPerimeter + (rand() % int(halfPerimeter) - halfPerimeter / 2.0f);
+    while (2.0f * halfPerimeter < res) {
+        res -= 2.0f * halfPerimeter;
+    }
+    return res;
 }
 
 
@@ -82,11 +86,11 @@ void AsteroidsGenerator::setPointAtPosition(Point& point, float position)
     else if (size_.y + size_.x <= position && position < size_.y + size_.x + size_.y)
     {
         point.x = 0.0f;
-        point.y = position - size_.y + size_.x;
+        point.y = position - (size_.y + size_.x);
     }
     else // (size_.y + size_.x + size_.y <= p < 2.0f * (size_.x + size_.y))
     {
-        point.x = position - size_.y + size_.x + size_.y;
+        point.x = position - (size_.y + size_.x + size_.y);
         point.y = size_.y;
     }
 

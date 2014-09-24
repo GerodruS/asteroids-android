@@ -4,21 +4,23 @@
 using std::vector;
 
 
-Game::Game()
+Game::Game() :
+    fieldSize_(1000.0f)
 {
 }
 
 
 void Game::setupGraphics(int width, int height)
 {
-    painter_.setupGraphics(width, height);
+    painter_.setupGraphics(getFieldSize(), width, height);
+
 }
 
 
 void Game::init()
 {
-    asteroidsGenerator_.setFrame(-painter_.getGameWidth() / 2.0f, -painter_.getGameHeight() / 2.0f,
-                                 painter_.getGameWidth(), painter_.getGameHeight());
+    asteroidsGenerator_.setFrame(-getFieldSize() / 4.0f, -getFieldSize() / 4.0f,
+        getFieldSize() / 2.0f, getFieldSize() / 2.0f);
 
     {
         buttons_.resize(4);
@@ -65,13 +67,8 @@ void Game::init()
         }
     }
 
-    asteroids_.resize(3);
-    asteroidsGenerator_.generate(asteroids_[0]);
-    asteroidsGenerator_.generate(asteroids_[1]);
-    asteroidsGenerator_.generate(asteroids_[2]);
-    asteroids_[0].setPosition(-500.0f, 0.0f);
-    asteroids_[1].setPosition(0.0f, 0.0f);
-    asteroids_[2].setPosition(500.0f, 0.0f);
+    asteroids_.resize(asteroids_.size() + 1);
+    asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
 }
 
 
@@ -87,11 +84,23 @@ void Game::step()
         }
     }
     {
-        const unsigned count = asteroids_.size();
-        for (unsigned i = 0; i < count; ++i)
+        //const unsigned count = asteroids_.size();
+        for (unsigned i = 0; i < asteroids_.size(); ++i)
         {
-            //asteroids_[i].step();
+            asteroids_[i].step();
+
+            const Point& p = asteroids_[i].getPosition();
+            if (p.x < -getFieldSize() / 2.0f || getFieldSize() / 2.0f < p.x ||
+                p.y < -getFieldSize() / 2.0f || getFieldSize() / 2.0f < p.y)
+            {
+                asteroids_.erase(asteroids_.begin() + i);
+                --i;
+            }
         }
+        asteroids_.resize(asteroids_.size() + 1);
+        asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
+        //asteroids_.resize(asteroids_.size() + 1);
+        //asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
         //asteroids_.push_back(asteroidsGenerator_.generate());
     }
 }
@@ -100,47 +109,24 @@ void Game::step()
 void Game::render()
 {
     painter_.drawPrepare();
-    //painter_.drawSquareButton(buttons_);
-
     painter_.drawAsteroids(asteroids_);
-    /*
-    std::vector<Asteroid> asteroids(1);
-    asteroids[0] = asteroids_[0];
-    painter_.drawAsteroids(asteroids);
-    asteroids[0] = asteroids_[1];
-    painter_.drawAsteroids(asteroids);
-    asteroids[0] = asteroids_[2];
-    painter_.drawAsteroids(asteroids);
-    */
+    painter_.drawSquareButton(buttons_);
 }
 
 
 void Game::touchDown(int id, float x, float y)
 {
-    touchManager_.touchDown(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
+    touchManager_.touchDown(id, painter_.getXFromScreenToGame(x), painter_.getYFromScreenToGame(y));
 }
 
 
 void Game::touchMove(int id, float x, float y)
 {
-    touchManager_.touchMove(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
+    touchManager_.touchMove(id, painter_.getXFromScreenToGame(x), painter_.getYFromScreenToGame(y));
 }
 
 
 void Game::touchUp(int id, float x, float y)
 {
-    touchManager_.touchUp(id, getXFromScreenToGame(x), getYFromScreenToGame(y));
-}
-
-
-float Game::getXFromScreenToGame(float value)
-{
-    const float sw = painter_.getScreenWidth();
-    return (value - sw / 2.0f) * painter_.getGameWidth() / sw;
-}
-
-float Game::getYFromScreenToGame(float value)
-{
-    const float sh = painter_.getScreenHeight();
-    return (sh - value - sh / 2.0f) * painter_.getGameHeight() / sh;
+    touchManager_.touchUp(id, painter_.getXFromScreenToGame(x), painter_.getYFromScreenToGame(y));
 }

@@ -19,8 +19,14 @@ public:
     void touchMove(int id, float x, float y);
     void touchUp(int id, float x, float y);
 
-    float getXFromScreenToGame(float value);
-    float getYFromScreenToGame(float value);
+    void setFieldSize(float value)
+    {
+        fieldSize_ = value;
+    };
+    float getFieldSize() const
+    {
+        return fieldSize_;
+    };
 
 private:
     Painter painter_;
@@ -29,6 +35,8 @@ private:
 
     std::vector<SquareButton> buttons_;
     std::vector<Asteroid> asteroids_;
+
+    float fieldSize_;
     /*
     SquareButton btnLeft_;
     SquareButton btnRight_;

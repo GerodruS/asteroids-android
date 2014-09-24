@@ -39,13 +39,15 @@ static const char gFragmentShader[] =
 
 
 Painter::Painter() :
-    fieldSize_(1000.0f)
+    fieldSize_(0.0f)
 {
 }
 
 
-void Painter::setupGraphics(int w, int h)
+void Painter::setupGraphics(float fieldSize, int w, int h)
 {
+    setFieldSize(fieldSize);
+
     screenWidth_ = w;
     screenHeight_ = h;
     ratioValue_ = screenHeight_ / screenWidth_;
@@ -172,24 +174,11 @@ void Painter::drawPrepare()
 
 void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 {
-    /*
-    points_.resize(3);
-    points_[0] = { -100500.0f, 100500.0f };
-    points_[1] = { 100500.0f, -100500.0f };
-    points_[2] = { 100500.0f, 100500.0f };
-
-    indexes_.resize(3);
-    indexes_[0] = 0;
-    indexes_[1] = 1;
-    indexes_[2] = 2;
-
-    colors_.resize(3);
-    colors_[0] = colorGreen;
-    colors_[1] = colorGreen;
-    colors_[2] = colorGreen;
-
-    drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3);
-    */
+    glScissor(getXFromGameToScreen(-fieldSize_ / 2.0f),
+        getYFromGameToScreen(-fieldSize_ / 2.0f),
+        getWidthFromGameToScreen(fieldSize_ / 1.0f),
+        getHeightFromGameToScreen(fieldSize_ / 1.0f));
+    glEnable(GL_SCISSOR_TEST);
     
     const unsigned countAsteroids = asterods.size();
 
@@ -237,11 +226,13 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
             indexes_.push_back(startIndex + j);
             indexes_.push_back(startIndex + j % edgesCount + 1);
         }
-        startIndex += 3 * edgesCount;
+        startIndex += edgesCount + 1;
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3 * edgesCountSum);
     
+
+    glDisable(GL_SCISSOR_TEST);
 }
 
 
@@ -295,4 +286,46 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6 * countButtons);
+}
+
+
+float Painter::getXFromScreenToGame(float value)
+{
+    const float sw = getScreenWidth();
+    return (value - sw / 2.0f) * getGameWidth() / sw;
+}
+
+
+float Painter::getYFromScreenToGame(float value)
+{
+    const float sh = getScreenHeight();
+    return (sh - value - sh / 2.0f) * getGameHeight() / sh;
+}
+
+
+float Painter::getXFromGameToScreen(float value)
+{
+    const float sw = getScreenWidth();
+    return value * sw / getGameWidth() + sw / 2.0f;
+}
+
+
+float Painter::getYFromGameToScreen(float value)
+{
+    const float sh = getScreenHeight();
+    return value * sh / getGameHeight() + sh / 2.0f;
+}
+
+
+float Painter::getWidthFromGameToScreen(float value)
+{
+    const float sw = getScreenWidth();
+    return value * sw / getGameWidth();
+}
+
+
+float Painter::getHeightFromGameToScreen(float value)
+{
+    const float sh = getScreenHeight();
+    return value * sh / getGameHeight();
 }
