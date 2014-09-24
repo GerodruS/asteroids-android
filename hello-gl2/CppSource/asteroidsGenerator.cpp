@@ -8,7 +8,7 @@ AsteroidsGenerator::AsteroidsGenerator() :
     radiusMin_(25),
     radiusMax_(75),
     velocityMin_(0.5f),
-    velocityMax_(2.0f)
+    velocityMax_(3.0f)
 {
 }
 

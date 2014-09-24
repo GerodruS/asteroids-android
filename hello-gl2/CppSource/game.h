@@ -31,6 +31,8 @@ public:
         return fieldSize_;
     };
 
+    void reset();
+
 private:
     Painter painter_;
     TouchManager touchManager_;
@@ -52,6 +54,9 @@ private:
 
     Timer tmrBullet_;
     float timeWaitBullet_;
+
+    Timer tmrNewGame_;
+    float timeNewGame_;
     /*
     SquareButton btnLeft_;
     SquareButton btnRight_;

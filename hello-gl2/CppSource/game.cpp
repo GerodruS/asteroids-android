@@ -8,7 +8,8 @@ using std::vector;
 Game::Game() :
     fieldSize_(1000.0f),
     timeWaitAsteroidNew_(2.0f),
-    timeWaitBullet_(0.5f)
+    timeWaitBullet_(0.5f),
+    timeNewGame_(1.0f)
 {
 }
 
@@ -74,7 +75,9 @@ void Game::init()
     asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
 
     //ship_ = Ship();
+    ship_.setDel(false);
     ship_.setPosition(0.0f, 0.0f);
+    ship_.setVelocity(0.0f, 0.0f);
     ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
     ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
 }
@@ -82,6 +85,11 @@ void Game::init()
 
 void Game::step()
 {
+    if (!tmrNewGame_.isReady())
+    {
+        return;
+    }
+
     {
         const unsigned countButtons = buttons_.size();
         const std::vector<Point>& touchesList = touchManager_.getTouches();
@@ -208,21 +216,35 @@ void Game::step()
         }
         if (ship_.isDel())
         {
-            ship_.setDel(false);
-            ship_.setPosition(0.0f, 0.0f);
-            ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
-            ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
+            reset();
         }
     }
+}
+
+
+void Game::reset()
+{
+    buttons_.clear();
+    asteroids_.clear();
+    bullets_.clear();
+    tmrAsteroidNew_.reset();
+    tmrBullet_.reset();
+
+    init();
+
+    tmrNewGame_.setAlarm(timeNewGame_);
 }
 
 
 void Game::render()
 {
     painter_.drawPrepare();
-    painter_.drawAsteroids(asteroids_);
-    painter_.drawBullets(bullets_);
-    painter_.drawShip(ship_);
+    if (tmrNewGame_.isReady())
+    {
+        painter_.drawAsteroids(asteroids_);
+        painter_.drawBullets(bullets_);
+        painter_.drawShip(ship_);
+    }
     painter_.drawSquareButton(buttons_);
 }
 

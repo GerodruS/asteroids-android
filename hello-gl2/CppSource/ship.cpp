@@ -8,7 +8,7 @@ using std::min;
 
 
 Ship::Ship() :
-    frictionForce_(0.9f)
+    frictionForce_(0.97f)
 {
     points_.resize(4);
 

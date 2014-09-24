@@ -308,6 +308,8 @@ void Painter::drawShip(const Ship& ship)
 
 void Painter::drawSquareButton(const vector<SquareButton>& buttons)
 {
+    float border = 0.2f;
+
     const unsigned countButtons = buttons.size();
 
     points_.resize(4 * countButtons);
@@ -317,8 +319,13 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
     Color c;
     for (unsigned i = 0; i < countButtons; ++i)
     {
-        const Point& pos = buttons[i].getPosition();
-        const Point& size = buttons[i].getSize();
+        Point pos = buttons[i].getPosition();
+        Point size = buttons[i].getSize();
+
+        pos.x += size.x * border / 2.0f;
+        pos.y += size.y * border / 2.0f;
+        size.x *= 1.0f - border;
+        size.y *= 1.0f - border;
 
         points_[4 * i + 0] = pos;
 
