@@ -1,25 +1,14 @@
 #pragma once
 
-#include <vector>
+#include "gameObject.h"
 
-#include "point.h"
-
-class Bullet
+class Bullet : public GameObject
 {
 public:
     Bullet();
-    ~Bullet();
-    
-    std::vector<float> points;
-    Point velocity;
 
-    void move(float x, float y);
-    void step();
+    virtual const Point& getPosition() const;
 
-    void setPosition(float x, float y);
-    void setVelocity(float x, float y);
-        
-    float getPositionX();
-    float getPositionY();
-    void getCenter(Point& point);
+private:
+
 };

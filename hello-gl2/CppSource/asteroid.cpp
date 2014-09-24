@@ -1,5 +1,5 @@
 #include "asteroid.h"
-
+/*
 #include <stdlib.h>
 #include <math.h>
 
@@ -301,7 +301,7 @@ bool AsteroidOld::asteroidIntersect(AsteroidOld& asteroid)
 bool AsteroidOld::bulletIntersect(Bullet& bullet)
 {
     Point p;
-    bullet.getCenter(p);
+    bullet.getPosition(p);
     return pointIntersect(p);
 }
 
@@ -344,3 +344,4 @@ void AsteroidOld::rotate(float  x_in, float  y_in,
     x_out = x_in * cos(angle) - y_in * sin(angle);
     y_out = x_in * sin(angle) + y_in * cos(angle);
 }
+*/

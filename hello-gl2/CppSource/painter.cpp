@@ -236,6 +236,43 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 }
 
 
+void Painter::drawBullets(const std::vector<Bullet>& bullets)
+{
+    glScissor(getXFromGameToScreen(-fieldSize_ / 2.0f),
+        getYFromGameToScreen(-fieldSize_ / 2.0f),
+        getWidthFromGameToScreen(fieldSize_ / 1.0f),
+        getHeightFromGameToScreen(fieldSize_ / 1.0f));
+    glEnable(GL_SCISSOR_TEST);
+
+    const unsigned countBullets = bullets.size();
+
+    points_.clear();
+    points_.reserve(4 * countBullets);
+    indexes_.resize(6 * countBullets);
+    colors_.resize(4 * countBullets);
+
+    const Color& c = colorRed;
+    for (unsigned i = 0; i < countBullets; ++i)
+    {
+        const vector<Point>& ps = bullets[i].getPoints();
+        points_.insert(points_.end(), ps.begin(), ps.end());
+
+        indexes_[i * 6 + 0] = 0; indexes_[i * 6 + 1] = 1; indexes_[i * 6 + 2] = 2;
+        indexes_[i * 6 + 3] = 0; indexes_[i * 6 + 4] = 2; indexes_[i * 6 + 5] = 3;
+
+        for (unsigned j = 0; j < 4; ++j)
+        {
+            colors_[i * 4 + j] = c;
+        }
+    }
+
+    drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6 * countBullets);
+
+
+    glDisable(GL_SCISSOR_TEST);
+}
+
+
 void Painter::drawShip(const Ship& ship)
 {
     glScissor(getXFromGameToScreen(-fieldSize_ / 2.0f),
@@ -262,65 +299,12 @@ void Painter::drawShip(const Ship& ship)
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6);
 
-    /*
-    const unsigned countAsteroids = asterods.size();
-
-    unsigned edgesCountSum = 0;
-    for (unsigned i = 0; i < countAsteroids; ++i)
-    {
-        edgesCountSum += asterods[i].getPoints().size() - 1;
-    }
-
-    points_.clear();
-    points_.reserve(countAsteroids + edgesCountSum);
-
-    indexes_.clear();
-    indexes_.reserve(3 * edgesCountSum);
-
-    colors_.clear();
-    colors_.reserve(countAsteroids + edgesCountSum);
-
-    const Color& c = colorRed;
-    unsigned startIndex = 0;
-    for (unsigned i = 0; i < countAsteroids; ++i)
-    {
-        const vector<Point>& ps = asterods[i].getPoints();
-        points_.insert(points_.end(), ps.begin(), ps.end());
-
-        const unsigned edgesCount = ps.size() - 1;
-        for (unsigned j = 0; j < edgesCount + 1; ++j)
-        {
-            switch (j % 3)
-            {
-            case 0:
-                colors_.push_back(colorRed);
-                break;
-            case 1:
-                colors_.push_back(colorGreen);
-                break;
-            case 2:
-                colors_.push_back(colorBlue);
-                break;
-            }
-        }
-        for (unsigned j = 1; j <= edgesCount; ++j)
-        {
-            indexes_.push_back(startIndex);
-            indexes_.push_back(startIndex + j);
-            indexes_.push_back(startIndex + j % edgesCount + 1);
-        }
-        startIndex += edgesCount + 1;
-    }
-
-    drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 3 * edgesCountSum);
-    */
-
     glDisable(GL_SCISSOR_TEST);
 }
 
 
 void Painter::drawSquareButton(const vector<SquareButton>& buttons)
-{    
+{
     const unsigned countButtons = buttons.size();
 
     points_.resize(4 * countButtons);

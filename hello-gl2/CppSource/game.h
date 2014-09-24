@@ -4,6 +4,7 @@
 #include "squareButton.h"
 #include "touchManager.h"
 #include "asteroidsGenerator.h"
+#include "bullet.h"
 #include "ship.h"
 
 class Game
@@ -36,6 +37,7 @@ private:
 
     std::vector<SquareButton> buttons_;
     std::vector<Asteroid> asteroids_;
+    std::vector<Bullet> bullets_;
     Ship ship_;
 
     float fieldSize_;

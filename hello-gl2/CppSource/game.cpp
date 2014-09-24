@@ -124,7 +124,7 @@ void Game::step()
         ship_.step();
 
         float angle = 5.0f;
-        float speed = 5.0f;
+        float speed = 2.0f;
         if (buttons_[0].isPress())
         {
             ship_.rotate(angle);
@@ -144,6 +144,13 @@ void Game::step()
 
         if (buttons_[3].isPress())
         {
+            float speedBullet = 1.0f;
+            const Point& startPosition = ship_.getBulletStartPosition();
+            Point velocity = ship_.getDirection();
+            bullets_.resize(bullets_.size() + 1);
+            Bullet& bullet = bullets_[bullets_.size() - 1];
+            bullet.setPosition(startPosition);
+            bullet.setVelocity(velocity.x * speedBullet, velocity.y * speedBullet);
             /*
             //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
             // fire
@@ -158,6 +165,12 @@ void Game::step()
             */
         }
     }
+    {
+        for (unsigned i = 0; i < bullets_.size(); ++i)
+        {
+            bullets_[i].step();
+        }
+    }
 }
 
 
@@ -165,6 +178,7 @@ void Game::render()
 {
     painter_.drawPrepare();
     painter_.drawAsteroids(asteroids_);
+    painter_.drawBullets(bullets_);
     painter_.drawShip(ship_);
     painter_.drawSquareButton(buttons_);
 }

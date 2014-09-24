@@ -38,6 +38,11 @@ public:
         return frameSize_;
     }
 
+    const Point& getBulletStartPosition() const
+    {
+        return points_[2];
+    }    
+
     void setFramePositon(const Point& value)
     {
         setFramePositon(value.x, value.y);
