@@ -16,6 +16,16 @@ public:
 
     virtual void step();
 
+    float getRadiusMin() const
+    {
+        return radiusMin_;
+    }
+
+    float getRadiusMax() const
+    {
+        return radiusMax_;
+    }
+
 private:
     float radiusMin_;
     float radiusMax_;

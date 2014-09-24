@@ -37,6 +37,10 @@ private:
     std::vector<Asteroid> asteroids_;
 
     float fieldSize_;
+
+    time_t time_prev;
+    float timeLeft_;
+    float timeWaiting_;
     /*
     SquareButton btnLeft_;
     SquareButton btnRight_;

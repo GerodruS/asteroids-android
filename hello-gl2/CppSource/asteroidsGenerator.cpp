@@ -5,10 +5,10 @@
 AsteroidsGenerator::AsteroidsGenerator() :
     edgeCountMin_(6),
     edgeCountMax_(12),
-    radiusMin_(10),
-    radiusMax_(30),
-    velocityMin_(1),
-    velocityMax_(3)
+    radiusMin_(25),
+    radiusMax_(75),
+    velocityMin_(0.5f),
+    velocityMax_(2.0f)
 {
 }
 
@@ -40,6 +40,9 @@ void AsteroidsGenerator::generate(Asteroid& asteroid)
     PointFunctions::normalize(pointTo, velocity);
 
     asteroid.setVelocity(pointTo.x, pointTo.y);
+
+    const float angularVelocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
+    asteroid.setAngularVelocity(angularVelocity);
 }
 
 
@@ -55,14 +58,15 @@ void AsteroidsGenerator::getPoints(Point& pointFrom, Point& pointTo)
 
 float AsteroidsGenerator::getPosition()
 {
-    return rand() % int(2.0f * (size_.x + size_.y));
+    float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    return rand() % int(2.0f * halfPerimeter);
 }
 
 
 float AsteroidsGenerator::getPosition(float from)
 {
-    float halfPerimeter = size_.x + size_.y;
-    float res = from + halfPerimeter + (rand() % int(halfPerimeter) - halfPerimeter / 2.0f);
+    float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    float res = from + halfPerimeter + (rand() % int(halfPerimeter / 2.0f) - halfPerimeter / 4.0f);
     while (2.0f * halfPerimeter < res) {
         res -= 2.0f * halfPerimeter;
     }
@@ -72,28 +76,30 @@ float AsteroidsGenerator::getPosition(float from)
 
 
 void AsteroidsGenerator::setPointAtPosition(Point& point, float position)
-{    
-    if (0.0f <= position && position < size_.y)
+{
+    float width = size_.x + 2.0f * radiusMax_;
+    float height = size_.y + 2.0f * radiusMax_;
+    if (0.0f <= position && position < height)
     {
-        point.x = size_.x;
-        point.y = position;
+        point.x = width;
+        point.y = height - position;
     }
-    else if (size_.y <= position && position < size_.y + size_.x)
+    else if (height <= position && position < height + width)
     {
-        point.x = position - size_.y;
+        point.x = width - (position - height);
         point.y = 0.0f;
     }
-    else if (size_.y + size_.x <= position && position < size_.y + size_.x + size_.y)
+    else if (height + width <= position && position < height + width + height)
     {
         point.x = 0.0f;
-        point.y = position - (size_.y + size_.x);
+        point.y = position - (height + width);
     }
     else // (size_.y + size_.x + size_.y <= p < 2.0f * (size_.x + size_.y))
     {
-        point.x = position - (size_.y + size_.x + size_.y);
-        point.y = size_.y;
+        point.x = position - (height + width + height);
+        point.y = height;
     }
 
-    point.x += position_.x;
-    point.y += position_.y;
+    point.x += position_.x - radiusMax_;
+    point.y += position_.y - radiusMax_;
 }

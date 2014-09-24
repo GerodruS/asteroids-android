@@ -1,12 +1,16 @@
 #include "game.h"
 
+#include <time.h>
 
 using std::vector;
 
 
 Game::Game() :
-    fieldSize_(1000.0f)
+    fieldSize_(1000.0f),
+    timeWaiting_(1.0f),
+    timeLeft_(0.0f)
 {
+    time(&time_prev);
 }
 
 
@@ -19,8 +23,8 @@ void Game::setupGraphics(int width, int height)
 
 void Game::init()
 {
-    asteroidsGenerator_.setFrame(-getFieldSize() / 4.0f, -getFieldSize() / 4.0f,
-        getFieldSize() / 2.0f, getFieldSize() / 2.0f);
+    asteroidsGenerator_.setFrame(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f,
+        getFieldSize() / 1.0f, getFieldSize() / 1.0f);
 
     {
         buttons_.resize(4);
@@ -90,18 +94,27 @@ void Game::step()
             asteroids_[i].step();
 
             const Point& p = asteroids_[i].getPosition();
-            if (p.x < -getFieldSize() / 2.0f || getFieldSize() / 2.0f < p.x ||
-                p.y < -getFieldSize() / 2.0f || getFieldSize() / 2.0f < p.y)
+            const float border = getFieldSize() / 2.0f + 2.0f * asteroids_[i].getRadiusMax();
+            if (p.x < -border || border < p.x || p.y < -border || border < p.y)
             {
                 asteroids_.erase(asteroids_.begin() + i);
                 --i;
             }
         }
-        asteroids_.resize(asteroids_.size() + 1);
-        asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
-        //asteroids_.resize(asteroids_.size() + 1);
-        //asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
-        //asteroids_.push_back(asteroidsGenerator_.generate());
+
+        if (0.0f < timeLeft_)
+        {
+            time_t time_now = time(NULL);
+            float deltaTime = difftime(time_now, time_prev);
+            time_prev = time_now;
+            timeLeft_ -= deltaTime;
+        }
+        else
+        {
+            asteroids_.resize(asteroids_.size() + 1);
+            asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
+            timeLeft_ = timeWaiting_;
+        }
     }
 }
 
