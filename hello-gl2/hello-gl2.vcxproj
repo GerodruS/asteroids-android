@@ -49,6 +49,7 @@
     <ClCompile Include="CppSource\gl_code.cpp" />
     <ClCompile Include="CppSource\painter.cpp" />
     <ClCompile Include="CppSource\ship.cpp" />
+    <ClCompile Include="CppSource\shipOld.cpp" />
     <ClCompile Include="CppSource\squareButton.cpp" />
     <ClCompile Include="CppSource\touches.cpp" />
     <ClCompile Include="CppSource\touchManager.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="CppSource\painter.h" />
     <ClInclude Include="CppSource\point.h" />
     <ClInclude Include="CppSource\ship.h" />
+    <ClInclude Include="CppSource\shipOld.h" />
     <ClInclude Include="CppSource\squareButton.h" />
     <ClInclude Include="CppSource\touches.h" />
     <ClInclude Include="CppSource\touchManager.h" />

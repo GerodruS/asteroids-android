@@ -7,7 +7,7 @@ using std::vector;
 
 Game::Game() :
     fieldSize_(1000.0f),
-    timeWaiting_(1.0f),
+    timeWaiting_(3.0f),
     timeLeft_(0.0f)
 {
     time(&time_prev);
@@ -73,6 +73,10 @@ void Game::init()
 
     asteroids_.resize(asteroids_.size() + 1);
     asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
+
+    ship_.setPosition(0.0f, 0.0f);
+    ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
+    ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
 }
 
 
@@ -116,6 +120,44 @@ void Game::step()
             timeLeft_ = timeWaiting_;
         }
     }
+    {
+        ship_.step();
+
+        float angle = 5.0f;
+        float speed = 5.0f;
+        if (buttons_[0].isPress())
+        {
+            ship_.rotate(angle);
+        }
+        
+        if (buttons_[1].isPress())
+        {
+            ship_.rotate(-angle);
+        }
+
+        if (buttons_[2].isPress())
+        {
+            Point d = ship_.getDirection();
+            ship_.addVelocity(d.x * speed, d.y * speed);
+            //ship.move(ship.direction.x * speed, ship.direction.y * speed);
+        }
+
+        if (buttons_[3].isPress())
+        {
+            /*
+            //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
+            // fire
+            Bullet bullet_tmp;
+            bullets.push_back(bullet_tmp);
+            Bullet& bullet = bullets[bullets.size() - 1];
+
+            Point startPosition = ship.getBulletStartPosition();
+            bullet.setPosition(startPosition.x, startPosition.y);
+            Point velocity = ship.getBulletStartMove();
+            bullet.setVelocity(velocity.x, velocity.y);
+            */
+        }
+    }
 }
 
 
@@ -123,6 +165,7 @@ void Game::render()
 {
     painter_.drawPrepare();
     painter_.drawAsteroids(asteroids_);
+    painter_.drawShip(ship_);
     painter_.drawSquareButton(buttons_);
 }
 

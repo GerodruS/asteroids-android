@@ -3,6 +3,7 @@
 #include <vector>
 #include "asteroidNew.h"
 #include "squareButton.h"
+#include "ship.h"
 #include "color.h"
 
 #include <GLES2/gl2.h>
@@ -17,6 +18,7 @@ public:
 
     void drawPrepare();
     void drawAsteroids(const std::vector<Asteroid>& asterods);
+    void drawShip(const Ship& ship);
     void drawSquareButton(const std::vector<SquareButton>& buttons);
 
     void setFieldSize(float value)
