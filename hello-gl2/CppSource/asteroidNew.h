@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gameObject.h"
+#include "bullet.h"
 
 class Asteroid : public GameObject
 {
@@ -26,8 +27,23 @@ public:
         return radiusMax_;
     }
 
+    bool isCollisionWithBullet(std::vector<Bullet>& bullets);
+
+    bool polygonsIntersect(const Point& point);
+    bool polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point);
+
+    void hit()
+    {
+        toDel_ = true;
+    }
+
+    bool isToDel() const
+    {
+        return toDel_;
+    }
+
 private:
     float radiusMin_;
     float radiusMax_;
-
+    bool toDel_;
 };

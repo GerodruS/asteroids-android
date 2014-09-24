@@ -5,7 +5,8 @@
 using std::vector;
 
 
-Asteroid::Asteroid()
+Asteroid::Asteroid() :
+    toDel_(false)
 {
     points_.push_back(pointZero);
 }
@@ -110,4 +111,86 @@ const Point& Asteroid::getPosition() const
 void Asteroid::step()
 {
     GameObject::step();
+}
+
+
+bool Asteroid::isCollisionWithBullet(vector<Bullet>& bullets)
+{
+    const Point& pa = getPosition();
+    const unsigned count = bullets.size();
+    bool result = false;
+    for (unsigned i = 0; i < count; ++i)
+    {
+        const Point& pb = bullets[i].getPosition();
+        float d = PointFunctions::distance(pa, pb);
+        if (d < radiusMin_)
+        {
+            result = true;
+            bullets[i].hit();
+        }
+        else if (radiusMax_ < d)
+        {
+            // false;
+        }
+        else
+        {
+            if (polygonsIntersect(pb))
+            {
+                result = true;
+                bullets[i].hit();
+            }
+        }
+    }
+
+    return result;
+}
+
+
+bool Asteroid::polygonsIntersect(const Point& point)
+{
+    Point a, b, c;
+    c = getPosition();
+    int count = points_.size() - 1;
+    for (int i = 0; i < count; ++i)
+    {
+        int j = (i + 1) % (count) + 1;
+        a = points_[i + 1];
+        b = points_[j];
+        bool res = polygonIntersect(a, b, c, point);
+        if (res)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool Asteroid::polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point)
+{
+    float xMin = fminf(a.x, fminf(b.x, c.x));
+    float yMin = fminf(a.y, fminf(b.y, c.y));
+    float xMax = fmaxf(a.x, fmaxf(b.x, c.x));
+    float yMax = fmaxf(a.y, fmaxf(b.y, c.y));
+    if (point.x < xMin || xMax < point.x ||
+        point.y < yMin || yMax < point.y)
+    {
+        return false;
+    }
+    else
+    {
+        float sqrA = PointFunctions::polygonSquare(a, b, c);
+        float sqrB = 0.0f;
+        sqrB += PointFunctions::polygonSquare(a, b, point);
+        sqrB += PointFunctions::polygonSquare(b, c, point);
+        sqrB += PointFunctions::polygonSquare(c, a, point);
+        if (fabsf(sqrA - sqrB) < 0.001f)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

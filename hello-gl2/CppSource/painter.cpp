@@ -257,8 +257,8 @@ void Painter::drawBullets(const std::vector<Bullet>& bullets)
         const vector<Point>& ps = bullets[i].getPoints();
         points_.insert(points_.end(), ps.begin(), ps.end());
 
-        indexes_[i * 6 + 0] = 0; indexes_[i * 6 + 1] = 1; indexes_[i * 6 + 2] = 2;
-        indexes_[i * 6 + 3] = 0; indexes_[i * 6 + 4] = 2; indexes_[i * 6 + 5] = 3;
+        indexes_[i * 6 + 0] = 4 * i; indexes_[i * 6 + 1] = 4 * i + 1; indexes_[i * 6 + 2] = 4 * i + 2;
+        indexes_[i * 6 + 3] = 4 * i; indexes_[i * 6 + 4] = 4 * i + 2; indexes_[i * 6 + 5] = 4 * i + 3;
 
         for (unsigned j = 0; j < 4; ++j)
         {

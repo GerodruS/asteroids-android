@@ -144,7 +144,7 @@ void Game::step()
 
         if (buttons_[3].isPress())
         {
-            float speedBullet = 1.0f;
+            float speedBullet = 5.0f;
             const Point& startPosition = ship_.getBulletStartPosition();
             Point velocity = ship_.getDirection();
             bullets_.resize(bullets_.size() + 1);
@@ -169,6 +169,37 @@ void Game::step()
         for (unsigned i = 0; i < bullets_.size(); ++i)
         {
             bullets_[i].step();
+        }
+    }
+
+    {
+        for (unsigned i = 0; i < asteroids_.size(); ++i)
+        {
+            if (asteroids_[i].isCollisionWithBullet(bullets_))
+            {
+                asteroids_[i].hit();
+                //asteroids_.erase(asteroids_.begin() + i);
+                //bullets_.erase(bullets_.begin() + j);
+            }
+        }
+    }
+
+    {
+        for (unsigned i = 0; i < asteroids_.size(); ++i)
+        {
+            if (asteroids_[i].isToDel())
+            {
+                asteroids_.erase(asteroids_.begin() + i);
+                --i;
+            }
+        }
+        for (unsigned i = 0; i < bullets_.size(); ++i)
+        {
+            if (bullets_[i].isToDel())
+            {
+                bullets_.erase(bullets_.begin() + i);
+                --i;
+            }
         }
     }
 }

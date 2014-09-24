@@ -51,6 +51,7 @@
     <ClCompile Include="CppSource\ship.cpp" />
     <ClCompile Include="CppSource\shipOld.cpp" />
     <ClCompile Include="CppSource\squareButton.cpp" />
+    <ClCompile Include="CppSource\timer.cpp" />
     <ClCompile Include="CppSource\touches.cpp" />
     <ClCompile Include="CppSource\touchManager.cpp" />
   </ItemGroup>
@@ -78,6 +79,7 @@
     <ClInclude Include="CppSource\ship.h" />
     <ClInclude Include="CppSource\shipOld.h" />
     <ClInclude Include="CppSource\squareButton.h" />
+    <ClInclude Include="CppSource\timer.h" />
     <ClInclude Include="CppSource\touches.h" />
     <ClInclude Include="CppSource\touchManager.h" />
   </ItemGroup>
