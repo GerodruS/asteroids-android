@@ -1,16 +1,15 @@
 #include "game.h"
 
-#include <time.h>
+//#include <time.h>
 
 using std::vector;
 
 
 Game::Game() :
     fieldSize_(1000.0f),
-    timeWaiting_(3.0f),
-    timeLeft_(0.0f)
+    timeWaitAsteroidNew_(2.0f),
+    timeWaitBullet_(0.2f)
 {
-    time(&time_prev);
 }
 
 
@@ -106,18 +105,11 @@ void Game::step()
             }
         }
 
-        if (0.0f < timeLeft_)
-        {
-            time_t time_now = time(NULL);
-            float deltaTime = difftime(time_now, time_prev);
-            time_prev = time_now;
-            timeLeft_ -= deltaTime;
-        }
-        else
+        if (tmrAsteroidNew_.isReady())
         {
             asteroids_.resize(asteroids_.size() + 1);
             asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1]);
-            timeLeft_ = timeWaiting_;
+            tmrAsteroidNew_.setAlarm(timeWaitAsteroidNew_);
         }
     }
     {
@@ -144,25 +136,18 @@ void Game::step()
 
         if (buttons_[3].isPress())
         {
-            float speedBullet = 5.0f;
-            const Point& startPosition = ship_.getBulletStartPosition();
-            Point velocity = ship_.getDirection();
-            bullets_.resize(bullets_.size() + 1);
-            Bullet& bullet = bullets_[bullets_.size() - 1];
-            bullet.setPosition(startPosition);
-            bullet.setVelocity(velocity.x * speedBullet, velocity.y * speedBullet);
-            /*
-            //ship.move(-ship.direction.x * speed, -ship.direction.y * speed);
-            // fire
-            Bullet bullet_tmp;
-            bullets.push_back(bullet_tmp);
-            Bullet& bullet = bullets[bullets.size() - 1];
+            if (tmrBullet_.isReady())
+            {
+                float speedBullet = 5.0f;
+                const Point& startPosition = ship_.getBulletStartPosition();
+                Point velocity = ship_.getDirection();
+                bullets_.resize(bullets_.size() + 1);
+                Bullet& bullet = bullets_[bullets_.size() - 1];
+                bullet.setPosition(startPosition);
+                bullet.setVelocity(velocity.x * speedBullet, velocity.y * speedBullet);
 
-            Point startPosition = ship.getBulletStartPosition();
-            bullet.setPosition(startPosition.x, startPosition.y);
-            Point velocity = ship.getBulletStartMove();
-            bullet.setVelocity(velocity.x, velocity.y);
-            */
+                tmrBullet_.setAlarm(timeWaitBullet_);
+            }
         }
     }
     {

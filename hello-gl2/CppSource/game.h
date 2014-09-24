@@ -6,6 +6,7 @@
 #include "asteroidsGenerator.h"
 #include "bullet.h"
 #include "ship.h"
+#include "timer.h"
 
 class Game
 {
@@ -41,10 +42,16 @@ private:
     Ship ship_;
 
     float fieldSize_;
-
+    /*
     time_t time_prev;
     float timeLeft_;
     float timeWaiting_;
+    */
+    Timer tmrAsteroidNew_;
+    float timeWaitAsteroidNew_;
+
+    Timer tmrBullet_;
+    float timeWaitBullet_;
     /*
     SquareButton btnLeft_;
     SquareButton btnRight_;
