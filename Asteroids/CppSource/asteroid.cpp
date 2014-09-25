@@ -2,12 +2,17 @@
 
 #include <stdlib.h>
 
+#include "bullet.h"
+
+
 using std::vector;
 
 
-Asteroid::Asteroid()
+Asteroid::Asteroid() :
+    radiusMin_(0.0f),
+    radiusMax_(0.0f),
+    generation_(0)
 {
-    points_.push_back(pointZero);
 }
 
 
@@ -21,19 +26,16 @@ void Asteroid::generate(const int edgeCountMin,
 
     const int count = edgeCountMin + rand() % (edgeCountMax - edgeCountMin);
 
+    //  находим случайные точки, расположенные на сторонах
+    //    квадрата с длиной ребра = 1 и центром в точке (0.5, 0.5)
     vector<float> angles(count);
     float summ = 0.0f;
-    for (int i = 0; i < count; ++i)
-    {
-        float value = 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
-        value += 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
-        value += 0.1f + (rand() % maxvalueInt) / maxvalueFlt;
-        
+    for (int i = 0; i < count; ++i) {
+        const float value = 0.1f + (rand() % maxvalueInt) / maxvalueFlt;        
         angles[i] = value;
         summ += value;
     }
-    for (int i = 0; i < count; ++i)
-    {
+    for (int i = 0; i < count; ++i) {
         angles[i] *= 4.0f / summ;
     }
 
@@ -44,122 +46,112 @@ void Asteroid::generate(const int edgeCountMin,
     points_[0] = pointZero;
     points_[1] = pointOne;
 
-    for (int i = 0; i < count - 1; ++i)
-    {
-        float a = angles[i];
-        angleCurrent += a;
-        if (0.0f < angleCurrent && angleCurrent <= 1.0f)
-        {
+    for (int i = 0; i < count - 1; ++i) {
+        angleCurrent += angles[i];
+        if (0.0f < angleCurrent && angleCurrent <= 1.0f) {
             points_[i + 2].x = 1.0f;
             points_[i + 2].y = 1.0f - angleCurrent;
         }
-        else if (1.0f < angleCurrent && angleCurrent <= 2.0f)
-        {
+        else if (1.0f < angleCurrent && angleCurrent <= 2.0f) {
             points_[i + 2].x = 2.0f - angleCurrent;
             points_[i + 2].y = 0.0f;
         }
-        else if (2.0f < angleCurrent && angleCurrent <= 3.0f)
-        {
+        else if (2.0f < angleCurrent && angleCurrent <= 3.0f) {
             points_[i + 2].x = 0.0f;
             points_[i + 2].y = angleCurrent - 2.0f;
         }
-        else if (3.0f < angleCurrent)
-        {
+        else if (3.0f < angleCurrent) {
             points_[i + 2].x = angleCurrent - 3.0;
             points_[i + 2].y = 1.0f;
         }
     }
 
-    for (int i = 1; i < count + 1; ++i)
-    {
+    //  сдвигаем центр квадрата в точку (0, 0) и
+    //    нормируем найденные точки
+    for (int i = 1; i < count + 1; ++i) {
         points_[i].x -= 0.5f;
         points_[i].y -= 0.5f;
     }
 
-    for (int i = 1; i < count + 1; ++i)
-    {
-        float r = radiusMin + rand() % int(radiusMax - radiusMin);
+    for (int i = 1; i < count + 1; ++i) {
+        const float r = radiusMin + rand() % int(radiusMax - radiusMin);
         PointFunctions::normalize(points_[i], r);
     }
 
+    //  находим расстояния от наиболее отдалённой и
+    //    ближайшей вершины до центра
     radiusMin_ = 0.0f;
     radiusMax_ = 0.0f;
     const Point& center = points_[0];
-    for (int i = 1; i < count + 1; ++i)
-    {
-        const Point& pnt = points_[i];
-        float r = PointFunctions::distance(pnt, center);
-        if (r < radiusMin_ || 0.0f == radiusMin_)
-        {
+    for (int i = 1; i < count + 1; ++i) {
+        const float r = PointFunctions::distance(points_[i], center);
+        if (r < radiusMin_ || 0.0f == radiusMin_) {
             radiusMin_ = r;
         }
-        if (radiusMax_ < r || 0.0f == radiusMax_)
-        {
+        if (radiusMax_ < r || 0.0f == radiusMax_) {
             radiusMax_ = r;
         }
     }
 }
 
 
-const Point& Asteroid::getPosition() const
+bool Asteroid::isCollisionWithBullet(const Bullet& bullet) const
 {
-    return points_[0];
-}
-
-
-void Asteroid::step()
-{
-    GameObject::step();
-}
-
-
-bool Asteroid::isCollisionWithBullet(vector<Bullet>& bullets)
-{
-    const Point& pa = getPosition();
-    const unsigned count = bullets.size();
-    bool result = false;
-    for (unsigned i = 0; i < count; ++i)
-    {
-        const Point& pb = bullets[i].getPosition();
-        float d = PointFunctions::distance(pa, pb);
-        if (d < radiusMin_)
-        {
-            result = true;
-            bullets[i].hit();
-        }
-        else if (radiusMax_ < d)
-        {
-            // false;
-        }
-        else
-        {
-            if (polygonsIntersect(pb))
-            {
-                result = true;
-                bullets[i].hit();
-            }
-        }
+    const Point& bulletPosition = bullet.getPosition();
+    const float d = PointFunctions::distance(getPosition(), bulletPosition);
+    
+    if (d < radiusMin_) {
+        return true;
+    }
+    else if (radiusMax_ < d) {
+        return false;
+    }
+    else if (isPointInsidePolygons(bulletPosition)) {
+        return true;
     }
 
-    return result;
+    return false;
 }
 
 
-bool Asteroid::polygonsIntersect(const Point& point) const
+bool Asteroid::isPointInsidePolygons(const Point& point) const
 {
-    Point a, b, c;
-    c = getPosition();
-    int count = points_.size() - 1;
-    for (int i = 0; i < count; ++i)
-    {
-        int j = (i + 1) % (count) + 1;
-        a = points_[i + 1];
-        b = points_[j];
-        bool res = PointFunctions::polygonIntersect(a, b, c, point);
-        if (res)
-        {
+    const Point& c = getPosition();
+    int count = points_.size();
+
+    for (int i = 1; i < count; ++i) {
+        const Point& a = points_[i];
+        const Point& b = points_[i % (count - 1) + 1];
+
+        const bool res = PointFunctions::isPointInsidePolygon(a, b, c, point);
+        if (res) {
             return true;
         }
     }
+
     return false;
+}
+
+
+float Asteroid::getRadiusMin() const
+{
+    return radiusMin_;
+}
+
+
+float Asteroid::getRadiusMax() const
+{
+    return radiusMax_;
+}
+
+
+int Asteroid::getGeneration() const
+{
+    return generation_;
+}
+
+
+void Asteroid::setGeneration(int value)
+{
+    generation_ = value;
 }

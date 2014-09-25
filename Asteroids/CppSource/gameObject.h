@@ -22,7 +22,7 @@ public:
     void setAngularVelocity(const float value);
     void addAngularVelocity(const float delta);
 
-    virtual const Point& getPosition() const;
+    const Point& getPosition() const;
     const Point& getVelocity() const;
     const Point& getVelocityMax() const;
     float getAngularVelocity() const;

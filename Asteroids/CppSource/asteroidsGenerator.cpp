@@ -8,7 +8,9 @@ AsteroidsGenerator::AsteroidsGenerator() :
     radiusMin_(25),
     radiusMax_(75),
     velocityMin_(0.5f),
-    velocityMax_(3.0f)
+    velocityMax_(3.0f),
+    position_({ 0.0f, 0.0f }),
+    size_({ 0.0f, 0.0f })
 {
 }
 
@@ -62,11 +64,11 @@ void AsteroidsGenerator::generate(Asteroid& asteroid, const Point* const positio
 
     if (position != 0) {
         asteroid.setAngularVelocity(2.0f * angularVelocity);
-        asteroid.generation = 2;
+        asteroid.setGeneration(2);
     }
     else {
         asteroid.setAngularVelocity(angularVelocity);
-        asteroid.generation = 1;
+        asteroid.setGeneration(1);
     }
 
 }

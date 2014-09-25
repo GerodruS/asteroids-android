@@ -6,6 +6,7 @@ GameObject::GameObject() :
     angularVelocity_(0.0f),
     toDel_(false)
 {
+    points_.push_back(pointZero);
 }
 
 
@@ -92,7 +93,7 @@ void GameObject::addAngularVelocity(const float delta)
 
 const Point& GameObject::getPosition() const
 {
-    return pointZero;
+    return points_[0];
 }
 
 

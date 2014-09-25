@@ -86,7 +86,7 @@ bool Ship::isCollisionWithAsteroid(const Asteroid& asteroid) const
         const unsigned count = points_.size();
         for (unsigned i = 0; i < count && !res; i += 2)
         {
-            if (asteroid.polygonsIntersect(points_[i]))
+            if (asteroid.isPointInsidePolygons(points_[i]))
             {
                 res = true;
             }

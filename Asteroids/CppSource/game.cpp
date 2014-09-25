@@ -171,22 +171,27 @@ void Game::step()
     }
 
     {
+
         for (unsigned i = 0; i < asteroids_.size(); ++i)
         {
-            if (asteroids_[i].isCollisionWithBullet(bullets_))
+            for (unsigned j = 0; j < bullets_.size(); ++j)
             {
-                asteroids_[i].hit();
+                if (asteroids_[i].isCollisionWithBullet(bullets_[j]))
+                {
+                    asteroids_[i].setDel(true);
+                    bullets_[j].setDel(true);
 
-                if (1 == asteroids_[i].generation) {
-                    const Point& pos = asteroids_[i].getPosition();
-                    asteroids_.resize(asteroids_.size() + 2);
+                    if (1 == asteroids_[i].getGeneration()) {
+                        const Point& pos = asteroids_[i].getPosition();
+                        asteroids_.resize(asteroids_.size() + 2);
 
-                    asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 2], &pos);
-                    asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1], &pos);
-
+                        asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 2], &pos);
+                        asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1], &pos);
+                    }
                 }
             }
         }
+
         for (unsigned i = 0; i < asteroids_.size(); ++i)
         {
             if (ship_.isCollisionWithAsteroid(asteroids_[i]))

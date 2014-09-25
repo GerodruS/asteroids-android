@@ -88,10 +88,10 @@ struct PointFunctions
         y = resY;
     }
 
-    static bool polygonIntersect(const Point& a,
-                                 const Point& b,
-                                 const Point& c,
-                                 const Point& point)
+    static bool isPointInsidePolygon(const Point& a,
+                                     const Point& b,
+                                     const Point& c,
+                                     const Point& point)
     {
         float xMin = fminf(a.x, fminf(b.x, c.x));
         float yMin = fminf(a.y, fminf(b.y, c.y));
