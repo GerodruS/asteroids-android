@@ -65,20 +65,20 @@
     <None Include="AndroidApk\build.xml">
       <Filter>AndroidApk</Filter>
     </None>
-    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIActivity.java">
-      <Filter>AndroidApk\JavaSource</Filter>
-    </None>
-    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNILib.java">
-      <Filter>AndroidApk\JavaSource</Filter>
-    </None>
-    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIView.java">
-      <Filter>AndroidApk\JavaSource</Filter>
-    </None>
     <None Include="AndroidApk\res\values\strings.xml">
       <Filter>AndroidApk</Filter>
     </None>
     <None Include="AndroidApk\project.properties">
       <Filter>AndroidApk</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsView.java">
+      <Filter>AndroidApk\JavaSource</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsActivity.java">
+      <Filter>AndroidApk\JavaSource</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsLib.java">
+      <Filter>AndroidApk\JavaSource</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
