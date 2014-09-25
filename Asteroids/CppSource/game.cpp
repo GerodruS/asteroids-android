@@ -180,7 +180,7 @@ void Game::checkTouches()
 
 void Game::shipControl()
 {
-    const float angle = 5.0f;
+    const float angle = 2.0f;
     const float speed = 2.0f;
     const float speedBullet = 5.0f;
 

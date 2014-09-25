@@ -47,8 +47,18 @@ void GameObject::addPosition(const Point& delta)
 
 void GameObject::setVelocity(const float x, const float y)
 {
-    velocity_.x = fminf(x, velocityMax_.x);
-    velocity_.y = fminf(y, velocityMax_.y);
+    if (fabsf(x) <= velocityMax_.x) {
+        velocity_.x = x;
+    }
+    else {
+        velocity_.x = (x < 0.0f ? -1 : 1) * velocityMax_.x;
+    }
+    if (fabsf(y) <= velocityMax_.y) {
+        velocity_.y = y;
+    }
+    else {
+        velocity_.y = (y < 0.0f ? -1 : 1) * velocityMax_.y;
+    }
 }
 
 

@@ -11,8 +11,8 @@ class Ship : public GameObject
 public:
     Ship(const float width = 50.0f,
          const float height = 60.0f,
-         const float frictionForce = 0.05f,
-         const float velocityMax = 3.0f);
+         const float frictionForce = 0.01f,
+         const float velocityMax = 4.0f);
 
     float getFrictionForce() const;
     const Point& getFramePositon() const;
