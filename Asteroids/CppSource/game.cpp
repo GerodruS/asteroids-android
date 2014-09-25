@@ -35,7 +35,7 @@ void Game::init()
 
         const float gameWidth = painter_.getGameWidth();
         const float gameHeight = painter_.getGameHeight();
-        if (painter_.isLandscape())
+
         {
             const float halfWidth = gameWidth / 2.0f;
             const float quarterHeight = gameHeight / 4.0f;
@@ -51,23 +51,6 @@ void Game::init()
 
             btnFire_.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
             btnFire_.setSize(quarterHeight, quarterHeight);
-        }
-        else
-        {
-            const float halfHeight = gameHeight / 2.0f;
-            const float quarterWidth = gameWidth / 4.0f;
-
-            btnLeft_.setPosition(-gameWidth / 2.0f, -halfHeight + quarterWidth);
-            btnLeft_.setSize(quarterWidth, quarterWidth);
-
-            btnRight_.setPosition(-quarterWidth, -halfHeight);
-            btnRight_.setSize(quarterWidth, quarterWidth);
-
-            btnFire_.setPosition(quarterWidth, -halfHeight + quarterWidth);
-            btnFire_.setSize(quarterWidth, quarterWidth);
-
-            btnMove_.setPosition(0.0f, -halfHeight + 500);
-            btnMove_.setSize(quarterWidth, quarterWidth);
         }
     }
 
@@ -246,9 +229,11 @@ void Game::render()
     painter_.drawPrepare();
     if (tmrNewGame_.isReady())
     {
+        painter_.drawScissorEnable();
         painter_.drawAsteroids(asteroids_);
         painter_.drawBullets(bullets_);
         painter_.drawShip(ship_);
+        painter_.drawScissorDisable();
     }
     painter_.drawSquareButton(buttons_);
 }

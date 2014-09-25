@@ -2,17 +2,15 @@
 
 #include <time.h>
 
+
 class Timer
 {
 public:
     Timer();
 
-    void setAlarm(float value);
+    void setAlarm(const float value);
     bool isReady();
-    void reset()
-    {
-        timeLeft_ = 0.0f;
-    };
+    void reset();
 
 private:
     float timeLeft_;
