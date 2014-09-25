@@ -6,6 +6,6 @@
 class Bullet : public GameObject
 {
 public:
-    Bullet(const float size = 5.0f);
+    Bullet(const float size = 10.0f);
 
 };

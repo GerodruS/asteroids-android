@@ -228,7 +228,6 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
     colors_.clear();
     colors_.reserve(countAsteroids + edgesCountSum);
 
-    const Color& c = colorRed;
     unsigned startIndex = 0;
     for (unsigned i = 0; i < countAsteroids; ++i) {
         const vector<Point>& ps = asterods[i].getPoints();
@@ -236,7 +235,7 @@ void Painter::drawAsteroids(const vector<Asteroid>& asterods)
 
         const unsigned edgesCount = ps.size() - 1;
         for (unsigned j = 0; j < edgesCount + 1; ++j) {
-            colors_.push_back(c);
+            colors_.push_back(colorAsteroids);
         }
         for (unsigned j = 1; j <= edgesCount; ++j) {
             indexes_.push_back(startIndex);
@@ -259,7 +258,6 @@ void Painter::drawBullets(const std::vector<Bullet>& bullets)
     indexes_.resize(6 * countBullets);
     colors_.resize(4 * countBullets);
 
-    const Color& c = colorRed;
     for (unsigned i = 0; i < countBullets; ++i) {
         const vector<Point>& ps = bullets[i].getPoints();
         points_.insert(points_.end(), ps.begin(), ps.end());
@@ -268,7 +266,7 @@ void Painter::drawBullets(const std::vector<Bullet>& bullets)
         indexes_[i * 6 + 3] = 4 * i; indexes_[i * 6 + 4] = 4 * i + 2; indexes_[i * 6 + 5] = 4 * i + 3;
 
         for (unsigned j = 0; j < 4; ++j) {
-            colors_[i * 4 + j] = c;
+            colors_[i * 4 + j] = colorBullet;
         }
     }
 
@@ -287,10 +285,9 @@ void Painter::drawShip(const Ship& ship)
     indexes_[0] = 0; indexes_[1] = 1; indexes_[2] = 2;
     indexes_[3] = 0; indexes_[4] = 2; indexes_[5] = 3;
 
-    const Color& c = colorRed;
     colors_.resize(4);
     for (unsigned i = 0; i < 4; ++i) {
-        colors_[i] = c;
+        colors_[i] = colorShip;
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6);
@@ -307,7 +304,6 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
     indexes_.resize(6 * countButtons);
     colors_.resize(4 * countButtons);
 
-    Color c;
     for (unsigned i = 0; i < countButtons; ++i) {
         Point pos = buttons[i].getPosition();
         Point size = buttons[i].getSize();
@@ -337,17 +333,17 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
         indexes_[6 * i + 4] = 4 * i + 3;
         indexes_[6 * i + 5] = 4 * i + 2;
 
-        c = { 0.0f, 0.0f, 0.0f, 1.0f };
         if (buttons[i].isPress()) {
-            c.r = 1.0f;
+            for (unsigned j = 0; j < 4; ++j) {
+                colors_[4 * i + j] = colorButtonPressed;
+            }
         }
         else {
-            c.b = 1.0f;
+            for (unsigned j = 0; j < 4; ++j) {
+                colors_[4 * i + j] = colorButtonUnpressed;
+            }
         }
 
-        for (unsigned j = 0; j < 4; ++j) {
-            colors_[4 * i + j] = c;
-        }
     }
 
     drawTriangles((GLfloat*)&(points_[0]), &(indexes_[0]), (GLfloat*)&(colors_[0]), 6 * countButtons);

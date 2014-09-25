@@ -10,8 +10,8 @@ class AsteroidsGenerator
 public:
     AsteroidsGenerator(int edgeCountMin = 6,
                        int edgeCountMax = 12,
-                       float radiusMin = 25.0f,
-                       float radiusMax = 75.0f,
+                       float radiusMin = 30.0f,
+                       float radiusMax = 90.0f,
                        float velocityMin = 0.5f,
                        float velocityMax = 3.0f);
 

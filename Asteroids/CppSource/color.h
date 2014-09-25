@@ -18,4 +18,10 @@ static const Color colorBlue  = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static const Color colorYellow  = { 1.0f, 1.0f, 0.0f, 1.0f };
 static const Color colorPurple  = { 1.0f, 0.0f, 1.0f, 1.0f };
-static const Color colorSkyBlue = { 0.0f, 1.0f, 1.0f, 1.0f };
+static const Color colorCyan    = { 0.0f, 1.0f, 1.0f, 1.0f };
+
+static const Color colorAsteroids       = colorCyan;
+static const Color colorBullet          = { 0.749f,  1.0f,    0.0f,    1.0f };
+static const Color colorShip            = { 1.0f,    0.4157f, 0.0f,    1.0f };
+static const Color colorButtonPressed   = { 0.749f,  0.0f,    1.0f,    1.0f };
+static const Color colorButtonUnpressed = { 1.0f,    0.0f,    0.4157f, 1.0f };
