@@ -7,6 +7,7 @@ using std::vector;
 
 
 GameObject::GameObject() :
+    velocity_(pointZero),
     velocityMax_({ 1.0e+10f, 1.0e+10f }),
     angularVelocity_(0.0f),
     toDel_(false)

@@ -10,15 +10,11 @@ Ship::Ship(const float width,
     framePositon_(pointZero),
     frameSize_(pointZero),
     frictionForce_(frictionForce),
-    radiusMax_(height)
+    radiusMax_(height),
+    width_(width),
+    height_(height)
 {
-    points_.resize(4);
-
-    points_[0].x = 0.0f;   points_[0].y = 0.0f;
-    points_[1].x = -width; points_[1].y = -height;
-    points_[2].x = 0.0f;   points_[2].y = height;
-    points_[3].x = width;  points_[3].y = -height;
-
+    reset();
     setVelocityMax(velocityMax, velocityMax);
 }
 
@@ -126,4 +122,20 @@ void Ship::step()
     else if (framePositon_.y + frameSize_.y + radiusMax_ < pos.y) {
         addPosition(0.0f, -(frameSize_.y + 2.0f * radiusMax_));
     }
+}
+
+
+void Ship::reset()
+{
+    setDel(false);
+
+    points_.resize(4);
+
+    points_[0].x = 0.0f;    points_[0].y = 0.0f;
+    points_[1].x = -width_; points_[1].y = -height_;
+    points_[2].x = 0.0f;    points_[2].y = height_;
+    points_[3].x = width_;  points_[3].y = -height_;
+
+    setVelocity(0.0f, 0.0f);
+    setAngularVelocity(0.0f);
 }

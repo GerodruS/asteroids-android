@@ -30,11 +30,14 @@ public:
     bool isCollisionWithAsteroid(const Asteroid& asteroid) const;
 
     virtual void step();
+    void reset();
 
 private:
     Point framePositon_;
     Point frameSize_;
     float frictionForce_;
     float radiusMax_;
+    float width_;
+    float height_;
 
 };

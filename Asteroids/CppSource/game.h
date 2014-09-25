@@ -8,30 +8,30 @@
 #include "ship.h"
 #include "timer.h"
 
+
 class Game
 {
 public:
-    Game();
+    Game(const float fieldSize = 1000.0f,
+         const float timeWaitAsteroidNew = 2.0f,
+         const float timeWaitBullet = 0.5f,
+         const float timeNewGame = 1.0f);
 
-    void setupGraphics(int width, int height);
     void init();
+    void setupGraphics(const int width, const int height);
+
     void step();
     void render();
 
-    void touchDown(int id, float x, float y);
-    void touchMove(int id, float x, float y);
-    void touchUp(int id, float x, float y);
+    float getFieldSize() const;
 
-    void setFieldSize(float value)
-    {
-        fieldSize_ = value;
-    };
-    float getFieldSize() const
-    {
-        return fieldSize_;
-    };
+    void setFieldSize(const float value);
 
     void reset();
+    
+    void touchDown(const int id, const float x, const float y);
+    void touchMove(const int id, const float x, const float y);
+    void touchUp(const int id, const float x, const float y);
 
 private:
     Painter painter_;
@@ -44,11 +44,7 @@ private:
     Ship ship_;
 
     float fieldSize_;
-    /*
-    time_t time_prev;
-    float timeLeft_;
-    float timeWaiting_;
-    */
+
     Timer tmrAsteroidNew_;
     float timeWaitAsteroidNew_;
 
@@ -57,11 +53,16 @@ private:
 
     Timer tmrNewGame_;
     float timeNewGame_;
-    /*
-    SquareButton btnLeft_;
-    SquareButton btnRight_;
-    SquareButton btnFire_;
-    SquareButton btnMove_;
-    */
+
+
+    void initButtons();
+    void initShip();
+    
+    void checkTouches();
+    void shipControl();
+    void stepObjects();
+    void generateAsteroid();
+    void checkCollisiions();
+    void delObjects();
 
 };
