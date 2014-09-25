@@ -1,49 +1,44 @@
 #pragma once
 
-#include <vector>
-
-#include "point.h"
+#include "gameObject.h"
 #include "bullet.h"
 
-class AsteroidOld
+class Asteroid : public GameObject
 {
 public:
-    AsteroidOld();
-    ~AsteroidOld();
+    Asteroid();
 
-    void generate(int n);
+    void generate(const int edgeCountMin,
+                  const int edgeCountMax,
+                  const float radiusMin,
+                  const float radiusMax);
 
-    float angularVelocity;
-    std::vector<float> points;
-    Point velocity;
+    virtual const Point& getPosition() const;
 
-    void move(float x, float y);
-    void step();
+    virtual void step();
 
-    void setPosition(float x, float y);
-    void setVelocity(float x, float y);
+    float getRadiusMin() const
+    {
+        return radiusMin_;
+    }
 
-    bool asteroidIntersect(AsteroidOld& asteroid);
-    bool pointIntersect(const Point& point);
-    bool polygonsIntersect(const Point& point);
-    bool polygonIntersect(const Point& a, const Point& b, const Point& c, const Point& point);
-    bool bulletIntersect(Bullet& bullet);
+    float getRadiusMax() const
+    {
+        return radiusMax_;
+    }
 
-    float getPositionX();
-    float getPositionY();
-    void getCenter(Point& point);
+    bool isCollisionWithBullet(std::vector<Bullet>& bullets);
 
-    float radiusMax;
-    float radiusMin;
+    bool polygonsIntersect(const Point& point) const;
+    
+    void hit()
+    {
+        setDel(true);
+    }
 
-    void rotate(float  x_in, float  y_in,
-        float& x_out, float& y_out,
-        float  angle);
+    int generation;
 
-    void rotate(float  x_in, float  y_in,
-        float  x_center, float  y_center,
-        float& x_out, float& y_out,
-        float  angle);
-
-    void rotate(float angle);
+private:
+    float radiusMin_;
+    float radiusMax_;
 };

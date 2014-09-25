@@ -41,7 +41,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppSource\asteroid.cpp" />
-    <ClCompile Include="CppSource\asteroidNew.cpp" />
     <ClCompile Include="CppSource\asteroidsGenerator.cpp" />
     <ClCompile Include="CppSource\bullet.cpp" />
     <ClCompile Include="CppSource\color.cpp" />
@@ -50,10 +49,8 @@
     <ClCompile Include="CppSource\gl_code.cpp" />
     <ClCompile Include="CppSource\painter.cpp" />
     <ClCompile Include="CppSource\ship.cpp" />
-    <ClCompile Include="CppSource\shipOld.cpp" />
     <ClCompile Include="CppSource\squareButton.cpp" />
     <ClCompile Include="CppSource\timer.cpp" />
-    <ClCompile Include="CppSource\touches.cpp" />
     <ClCompile Include="CppSource\touchManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppSource\asteroid.h" />
-    <ClInclude Include="CppSource\asteroidNew.h" />
     <ClInclude Include="CppSource\asteroidsGenerator.h" />
     <ClInclude Include="CppSource\bullet.h" />
     <ClInclude Include="CppSource\color.h" />
@@ -78,10 +74,8 @@
     <ClInclude Include="CppSource\painter.h" />
     <ClInclude Include="CppSource\point.h" />
     <ClInclude Include="CppSource\ship.h" />
-    <ClInclude Include="CppSource\shipOld.h" />
     <ClInclude Include="CppSource\squareButton.h" />
     <ClInclude Include="CppSource\timer.h" />
-    <ClInclude Include="CppSource\touches.h" />
     <ClInclude Include="CppSource\touchManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

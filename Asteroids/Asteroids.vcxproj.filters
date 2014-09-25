@@ -10,52 +10,55 @@
     <Filter Include="AndroidApk\JavaSource">
       <UniqueIdentifier>{ab0536cf-ea92-4e84-b130-25292ade30e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CppSource\primitives">
+      <UniqueIdentifier>{932f60f2-8afd-4b3b-8ae9-f382f47b5fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\system">
+      <UniqueIdentifier>{58a8a43c-186f-433c-9619-34478274d254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\gameObjects">
+      <UniqueIdentifier>{1184058c-065a-4a62-ac0d-e2cfa2950ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSource\gui">
+      <UniqueIdentifier>{752ef277-4d93-4763-81b1-25c452e97b5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppSource\gl_code.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
-    <ClCompile Include="CppSource\asteroid.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\ship.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\bullet.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\touches.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\squareButton.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\gameObject.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\asteroidNew.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\painter.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\color.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
     <ClCompile Include="CppSource\game.cpp">
-      <Filter>CppSource</Filter>
-    </ClCompile>
-    <ClCompile Include="CppSource\touchManager.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
     <ClCompile Include="CppSource\asteroidsGenerator.cpp">
       <Filter>CppSource</Filter>
     </ClCompile>
-    <ClCompile Include="CppSource\shipOld.cpp">
-      <Filter>CppSource</Filter>
+    <ClCompile Include="CppSource\bullet.cpp">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\gameObject.cpp">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\ship.cpp">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\color.cpp">
+      <Filter>CppSource\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\painter.cpp">
+      <Filter>CppSource\system</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\squareButton.cpp">
+      <Filter>CppSource\gui</Filter>
     </ClCompile>
     <ClCompile Include="CppSource\timer.cpp">
-      <Filter>CppSource</Filter>
+      <Filter>CppSource\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\touchManager.cpp">
+      <Filter>CppSource\system</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\asteroid.cpp">
+      <Filter>CppSource\gameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,50 +85,41 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CppSource\asteroid.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\ship.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\point.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\bullet.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\touches.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\squareButton.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\gameObject.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\asteroidNew.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\painter.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\color.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
     <ClInclude Include="CppSource\game.h">
-      <Filter>CppSource</Filter>
-    </ClInclude>
-    <ClInclude Include="CppSource\touchManager.h">
       <Filter>CppSource</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\asteroidsGenerator.h">
       <Filter>CppSource</Filter>
     </ClInclude>
-    <ClInclude Include="CppSource\shipOld.h">
-      <Filter>CppSource</Filter>
+    <ClInclude Include="CppSource\bullet.h">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\gameObject.h">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\ship.h">
+      <Filter>CppSource\gameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\color.h">
+      <Filter>CppSource\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\point.h">
+      <Filter>CppSource\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\painter.h">
+      <Filter>CppSource\system</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\squareButton.h">
+      <Filter>CppSource\gui</Filter>
     </ClInclude>
     <ClInclude Include="CppSource\timer.h">
-      <Filter>CppSource</Filter>
+      <Filter>CppSource\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\touchManager.h">
+      <Filter>CppSource\system</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\asteroid.h">
+      <Filter>CppSource\gameObjects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

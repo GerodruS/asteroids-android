@@ -1,6 +1,6 @@
 #pragma once
 
-#include "asteroidNew.h"
+#include "asteroid.h"
 
 class AsteroidsGenerator
 {

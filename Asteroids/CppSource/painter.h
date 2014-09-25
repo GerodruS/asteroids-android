@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "asteroidNew.h"
+#include "asteroid.h"
 #include "squareButton.h"
 #include "ship.h"
 #include "bullet.h"

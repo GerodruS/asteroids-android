@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gameObject.h"
-#include "asteroidNew.h"
+#include "asteroid.h"
 
 class Ship : public GameObject
 {
