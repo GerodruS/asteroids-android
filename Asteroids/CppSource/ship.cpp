@@ -1,33 +1,103 @@
 #include "ship.h"
 
-#include <stdlib.h>
-#include <algorithm>
-
-using std::vector;
-using std::min;
+#include "asteroid.h"
 
 
-Ship::Ship() :
-    frictionForce_(0.97f)
+Ship::Ship(const float width,
+           const float height,
+           const float frictionForce,
+           const float velocityMax) :
+    framePositon_(pointZero),
+    frameSize_(pointZero),
+    frictionForce_(frictionForce),
+    radiusMax_(height)
 {
     points_.resize(4);
-
-    const float width = 50;
-    const float height = 60;
 
     points_[0].x = 0.0f;   points_[0].y = 0.0f;
     points_[1].x = -width; points_[1].y = -height;
     points_[2].x = 0.0f;   points_[2].y = height;
     points_[3].x = width;  points_[3].y = -height;
 
-    radiusMax_ = sqrtf(width * width + height * height);
-    setVelocityMax(3.0f, 3.0f);
+    setVelocityMax(velocityMax, velocityMax);
 }
 
 
-const Point& Ship::getPosition() const
+float Ship::getFrictionForce() const
 {
-    return points_[0];
+    return frictionForce_;
+}
+
+
+const Point& Ship::getFramePositon() const
+{
+    return framePositon_;
+}
+
+
+const Point& Ship::getFrameSize() const
+{
+    return frameSize_;
+}
+
+
+const Point& Ship::getBulletStartPosition() const
+{
+    return points_[2];
+}
+
+
+Point Ship::getDirection() const
+{
+    Point p = { points_[2].x - points_[0].x, points_[2].y - points_[0].y };
+    PointFunctions::normalize(p);
+    return p;
+}
+
+
+void Ship::setFrictionForce(const float value)
+{
+    frictionForce_ = value;
+}
+
+
+void Ship::setFramePositon(const float x, const float y)
+{
+    framePositon_.x = x;
+    framePositon_.y = y;
+}
+
+
+void Ship::setFramePositon(const Point& value)
+{
+    setFramePositon(value.x, value.y);
+}
+
+
+void Ship::setFrameSize(const float x, const float y)
+{
+    frameSize_.x = x;
+    frameSize_.y = y;
+}
+
+
+void Ship::setFrameSize(const Point& value)
+{
+    setFrameSize(value.x, value.y);
+}
+
+
+bool Ship::isCollisionWithAsteroid(const Asteroid& asteroid) const
+{
+    const float d = PointFunctions::distance(getPosition(), asteroid.getPosition());
+    if (radiusMax_ + asteroid.getRadiusMax() < d) {
+        return false;
+    }
+    else {
+        const bool res = asteroid.isPointInsidePolygons(points_[0]) ||
+                         asteroid.isPointInsidePolygons(points_[2]);
+        return res;
+    }
 }
 
 
@@ -35,62 +105,25 @@ void Ship::step()
 {
     GameObject::step();
 
-    Point velocity = getVelocity();
-    float l = PointFunctions::length(velocity);
-    /*
-    if (l < frictionForce_)
-    {
-        velocity.x = 0.0f;
-        velocity.y = 0.0f;
-    }
-    else
-    {
-        PointFunctions::normalize(velocity, l - frictionForce_);
-    }
-    */
-    setVelocity(velocity.x * frictionForce_, velocity.y * frictionForce_);
+    //  сила трения
+    const Point& velocity = getVelocity();
+    setVelocity(velocity.x * (1.0f - frictionForce_),
+        velocity.y * (1.0f - frictionForce_));
 
+    //  свёртка пространства
     const Point& pos = getPosition();
-    if (pos.x < framePositon_.x)
-    {
-        addPosition(frameSize_.x, 0.0f);
+
+    if (pos.x < framePositon_.x - radiusMax_) {
+        addPosition(frameSize_.x + 2.0f * radiusMax_, 0.0f);
     }
-    else if (framePositon_.x + frameSize_.x < pos.x)
-    {
-        addPosition(-frameSize_.x, 0.0f);
+    else if (framePositon_.x + frameSize_.x + radiusMax_ < pos.x) {
+        addPosition(-(frameSize_.x + 2.0f * radiusMax_), 0.0f);
     }
 
-    if (pos.y < framePositon_.y)
-    {
-        addPosition(0.0f, frameSize_.y);
+    if (pos.y < framePositon_.y - radiusMax_) {
+        addPosition(0.0f, frameSize_.y + 2.0f * radiusMax_);
     }
-    else if (framePositon_.y + frameSize_.y < pos.y)
-    {
-        addPosition(0.0f, -frameSize_.y);
-    }
-}
-
-
-bool Ship::isCollisionWithAsteroid(const Asteroid& asteroid) const
-{
-    const Point& positionShip = getPosition();
-    const Point& positionAsteroid = asteroid.getPosition();
-    const float d = PointFunctions::distance(positionShip, positionAsteroid);
-    if (radiusMax_ + asteroid.getRadiusMax() < d)
-    {
-        return false;
-    }
-    else
-    {
-        bool res = false;
-        const unsigned count = points_.size();
-        for (unsigned i = 0; i < count && !res; i += 2)
-        {
-            if (asteroid.isPointInsidePolygons(points_[i]))
-            {
-                res = true;
-            }
-        }
-        return res;
+    else if (framePositon_.y + frameSize_.y + radiusMax_ < pos.y) {
+        addPosition(0.0f, -(frameSize_.y + 2.0f * radiusMax_));
     }
 }

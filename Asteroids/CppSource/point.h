@@ -51,9 +51,9 @@ struct PointFunctions
 
     static void normalize(Point& point, float value = 1.0f)
     {
-        float l = length(point);
-        point.x *= value / l;
-        point.y *= value / l;
+        const float k = value / length(point);
+        point.x *= k;
+        point.y *= k;
     }
 
     static void rotate(Point& point, const Point& center, const float angle)
