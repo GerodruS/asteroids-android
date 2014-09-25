@@ -21,7 +21,7 @@ Ship::Ship() :
     points_[3].x = width;  points_[3].y = -height;
 
     radiusMax_ = sqrtf(width * width + height * height);
-    setVelocityMax(5.0f, 5.0f);
+    setVelocityMax(3.0f, 3.0f);
 }
 
 
@@ -53,20 +53,20 @@ void Ship::step()
     const Point& pos = getPosition();
     if (pos.x < framePositon_.x)
     {
-        moveOn(frameSize_.x, 0.0f);
+        addPosition(frameSize_.x, 0.0f);
     }
     else if (framePositon_.x + frameSize_.x < pos.x)
     {
-        moveOn(-frameSize_.x, 0.0f);
+        addPosition(-frameSize_.x, 0.0f);
     }
 
     if (pos.y < framePositon_.y)
     {
-        moveOn(0.0f, frameSize_.y);
+        addPosition(0.0f, frameSize_.y);
     }
     else if (framePositon_.y + frameSize_.y < pos.y)
     {
-        moveOn(0.0f, -frameSize_.y);
+        addPosition(0.0f, -frameSize_.y);
     }
 }
 
