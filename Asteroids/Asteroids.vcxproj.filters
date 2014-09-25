@@ -60,6 +60,9 @@
     <ClCompile Include="CppSource\point.cpp">
       <Filter>CppSource\primitives</Filter>
     </ClCompile>
+    <ClCompile Include="CppSource\constants.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AndroidApk\AndroidManifest.xml">
@@ -120,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="CppSource\asteroid.h">
       <Filter>CppSource\gameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\constants.h">
+      <Filter>CppSource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

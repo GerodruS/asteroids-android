@@ -3,17 +3,29 @@
 #include "asteroid.h"
 
 
-Ship::Ship(const float width,
-           const float height,
-           const float frictionForce,
-           const float velocityMax) :
+Ship::Ship() :
     framePositon_(pointZero),
     frameSize_(pointZero),
-    frictionForce_(frictionForce),
-    radiusMax_(height),
-    width_(width),
-    height_(height)
+    frictionForce_(0.0f),
+    radiusMax_(0.0f),
+    width_(0.0f),
+    height_(0.0f)
 {
+}
+
+
+void Ship::init(const float width,
+                const float height,
+                const float frictionForce,
+                const float velocityMax)
+{
+    framePositon_ = pointZero;
+    frameSize_ = pointZero;
+    frictionForce_ = frictionForce;
+    radiusMax_ = height;
+    width_ = width;
+    height_ = height;
+
     reset();
     setVelocityMax(velocityMax, velocityMax);
 }

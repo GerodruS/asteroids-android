@@ -1,7 +1,12 @@
 #include "bullet.h"
 
 
-Bullet::Bullet(const float size)
+Bullet::Bullet()
+{
+}
+
+
+void Bullet::init(const float size)
 {
     points_.resize(4);
 

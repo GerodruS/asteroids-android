@@ -8,12 +8,14 @@ class Asteroid;
 class AsteroidsGenerator
 {
 public:
-    AsteroidsGenerator(int edgeCountMin = 6,
-                       int edgeCountMax = 12,
-                       float radiusMin = 30.0f,
-                       float radiusMax = 90.0f,
-                       float velocityMin = 0.5f,
-                       float velocityMax = 3.0f);
+    AsteroidsGenerator();
+
+    void init(const int edgeCountMin,
+              const int edgeCountMax,
+              const float radiusMin,
+              const float radiusMax,
+              const float velocityMin,
+              const float velocityMax);
 
     //  создаёт новый астероид и устанавливает траекторию его движения
     //    если позиции нет, то астероид стартует за экраном и Generation = 1
@@ -37,12 +39,12 @@ private:
     float velocityMax_;
 
 
-    float getPosition() const;
-    float getPosition(const float from) const;
-    void setPointAtPosition(Point& point, const float position) const;
     //  генерирует две случайные точки (старт и финиш астероида),
     //    рассположенные на рёбрах квадрата, заданного position_ и size_
     //    точки расположены не на одной грани
     void getPoints(Point& from, Point& to) const;
+    void setPointAtPosition(Point& point, const float position) const;
+    float getPosition() const;
+    float getPosition(const float from) const;
 
 };

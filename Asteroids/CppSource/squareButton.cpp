@@ -5,29 +5,11 @@ using std::vector;
 
 
 SquareButton::SquareButton() :
-    position_({ 0.0f, 0.0f }),
-    size_({ 0.0f, 0.0f }),
+    position_(pointZero),
+    size_(pointZero),
+    border_(0.0f),
     isPress_(false)
 {
-}
-
-
-void SquareButton::setIsPress(const bool value)
-{
-    isPress_ = value;
-}
-
-
-void SquareButton::setSize(const float x, const float y)
-{
-    size_.x = x;
-    size_.y = y;
-}
-
-
-void SquareButton::setSize(const Point& point)
-{
-    setSize(point.x, point.y);
 }
 
 
@@ -44,9 +26,28 @@ void SquareButton::setPosition(const Point& point)
 }
 
 
-bool SquareButton::isPress() const
+void SquareButton::setSize(const float x, const float y)
 {
-    return isPress_;
+    size_.x = x;
+    size_.y = y;
+}
+
+
+void SquareButton::setSize(const Point& point)
+{
+    setSize(point.x, point.y);
+}
+
+
+void SquareButton::setBorder(const float value)
+{
+    border_ = value;
+}
+
+
+void SquareButton::setIsPress(const bool value)
+{
+    isPress_ = value;
 }
 
 
@@ -59,6 +60,18 @@ const Point& SquareButton::getPosition() const
 const Point& SquareButton::getSize() const
 {
     return size_;
+}
+
+
+float SquareButton::getBorder() const
+{
+    return border_;
+}
+
+
+bool SquareButton::isPress() const
+{
+    return isPress_;
 }
 
 

@@ -21,7 +21,7 @@ void Asteroid::generate(const int edgeCountMin,
                         const float radiusMin,
                         const float radiusMax)
 {
-    const int   maxvalueInt = 1000;
+    const int   maxvalueInt = 10000;
     const float maxvalueFlt = 100.0f;
 
     const unsigned count = edgeCountMin + rand() % (edgeCountMax - edgeCountMin);
@@ -41,11 +41,10 @@ void Asteroid::generate(const int edgeCountMin,
 
     points_.resize(count + 1);
 
-    float angleCurrent = 0.0f;
-
     points_[0] = pointZero;
     points_[1] = pointOne;
-
+    
+    float angleCurrent = 0.0f;
     for (unsigned i = 0; i < count - 1; ++i) {
         angleCurrent += angles[i];
         if (0.0f < angleCurrent && angleCurrent <= 1.0f) {
@@ -61,7 +60,7 @@ void Asteroid::generate(const int edgeCountMin,
             points_[i + 2].y = angleCurrent - 2.0f;
         }
         else if (3.0f < angleCurrent) {
-            points_[i + 2].x = angleCurrent - 3.0;
+            points_[i + 2].x = angleCurrent - 3.0f;
             points_[i + 2].y = 1.0f;
         }
     }
@@ -116,14 +115,15 @@ bool Asteroid::isCollisionWithBullet(const Bullet& bullet) const
 
 bool Asteroid::isPointInsidePolygons(const Point& point) const
 {
-    const Point& c = getPosition();
+    const Point& center = getPosition();
     const unsigned count = points_.size();
 
     for (unsigned i = 1; i < count; ++i) {
-        const Point& a = points_[i];
-        const Point& b = points_[i % (count - 1) + 1];
-
-        const bool res = PointFunctions::isPointInsidePolygon(a, b, c, point);
+        const unsigned j = i % (count - 1) + 1;
+        const bool res = PointFunctions::isPointInsidePolygon(points_[i],
+                                                              points_[j],
+                                                              center,
+                                                              point);
         if (res) {
             return true;
         }
@@ -151,7 +151,7 @@ int Asteroid::getGeneration() const
 }
 
 
-void Asteroid::setGeneration(int value)
+void Asteroid::setGeneration(const int value)
 {
     generation_ = value;
 }

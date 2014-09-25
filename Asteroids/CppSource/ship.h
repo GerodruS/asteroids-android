@@ -9,10 +9,12 @@ class Asteroid;
 class Ship : public GameObject
 {
 public:
-    Ship(const float width = 40.0f,
-         const float height = 50.0f,
-         const float frictionForce = 0.01f,
-         const float velocityMax = 4.0f);
+    Ship();
+
+    void init(const float width,
+              const float height,
+              const float frictionForce,
+              const float velocityMax);
 
     float getFrictionForce() const;
     const Point& getFramePositon() const;

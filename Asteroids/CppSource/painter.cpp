@@ -181,7 +181,7 @@ void Painter::setFieldSize(const float value)
 
 void Painter::drawPrepare() const
 {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(colorBack.r, colorBack.g, colorBack.b, colorBack.a);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glUseProgram(gProgram_);
@@ -196,9 +196,9 @@ void Painter::drawPrepare() const
 void Painter::drawScissorEnable() const
 {
     glScissor(getXFromGameToScreen(-fieldSize_ / 2.0f),
-        getYFromGameToScreen(-fieldSize_ / 2.0f),
-        getWidthFromGameToScreen(fieldSize_ / 1.0f),
-        getHeightFromGameToScreen(fieldSize_ / 1.0f));
+              getYFromGameToScreen(-fieldSize_ / 2.0f),
+              getWidthFromGameToScreen(fieldSize_),
+              getHeightFromGameToScreen(fieldSize_));
     glEnable(GL_SCISSOR_TEST);
 }
 
@@ -296,8 +296,6 @@ void Painter::drawShip(const Ship& ship)
 
 void Painter::drawSquareButton(const vector<SquareButton>& buttons)
 {
-    float border = 0.2f;
-
     const unsigned countButtons = buttons.size();
 
     points_.resize(4 * countButtons);
@@ -305,8 +303,11 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
     colors_.resize(4 * countButtons);
 
     for (unsigned i = 0; i < countButtons; ++i) {
-        Point pos = buttons[i].getPosition();
-        Point size = buttons[i].getSize();
+        const SquareButton& btn = buttons[i];
+
+        Point pos = btn.getPosition();
+        Point size = btn.getSize();
+        const float border = btn.getBorder();
 
         pos.x += size.x * border / 2.0f;
         pos.y += size.y * border / 2.0f;
@@ -333,7 +334,7 @@ void Painter::drawSquareButton(const vector<SquareButton>& buttons)
         indexes_[6 * i + 4] = 4 * i + 3;
         indexes_[6 * i + 5] = 4 * i + 2;
 
-        if (buttons[i].isPress()) {
+        if (btn.isPress()) {
             for (unsigned j = 0; j < 4; ++j) {
                 colors_[4 * i + j] = colorButtonPressed;
             }

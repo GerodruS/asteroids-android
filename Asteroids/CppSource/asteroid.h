@@ -26,7 +26,7 @@ public:
     float getRadiusMax() const;
     int getGeneration() const;
 
-    void setGeneration(int value);
+    void setGeneration(const int value);
     
 private:
     float radiusMin_;

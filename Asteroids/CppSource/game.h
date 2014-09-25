@@ -12,10 +12,7 @@
 class Game
 {
 public:
-    Game(const float fieldSize = 1000.0f,
-         const float timeWaitAsteroidNew = 2.0f,
-         const float timeWaitBullet = 0.5f,
-         const float timeNewGame = 1.0f);
+    Game();
 
     void init();
     void setupGraphics(const int width, const int height);
@@ -23,15 +20,12 @@ public:
     void step();
     void render();
 
-    float getFieldSize() const;
-
-    void setFieldSize(const float value);
-
     void reset();
     
     void touchDown(const int id, const float x, const float y);
     void touchMove(const int id, const float x, const float y);
     void touchUp(const int id, const float x, const float y);
+
 
 private:
     Painter painter_;
@@ -43,16 +37,9 @@ private:
     std::vector<Bullet> bullets_;
     Ship ship_;
 
-    float fieldSize_;
-
     Timer tmrAsteroidNew_;
-    float timeWaitAsteroidNew_;
-
     Timer tmrBullet_;
-    float timeWaitBullet_;
-
     Timer tmrNewGame_;
-    float timeNewGame_;
 
 
     void initButtons();

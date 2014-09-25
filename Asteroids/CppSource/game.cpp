@@ -1,27 +1,28 @@
 #include "game.h"
 
+#include "constants.h"
+
 
 using std::vector;
 
 
-Game::Game(const float fieldSize,
-           const float timeWaitAsteroidNew,
-           const float timeWaitBullet,
-           const float timeNewGame) :
-    fieldSize_(fieldSize),
-    timeWaitAsteroidNew_(timeWaitAsteroidNew),
-    timeWaitBullet_(timeWaitBullet),
-    timeNewGame_(timeNewGame)
+Game::Game()
 {
 }
 
 
 void Game::init()
 {
-    asteroidsGenerator_.setFrame(-getFieldSize() / 2.0f,
-                                 -getFieldSize() / 2.0f,
-                                  getFieldSize(),
-                                  getFieldSize());
+    asteroidsGenerator_.init(Constants::getGeneratorEdgeCountMin(),
+                             Constants::getGeneratorEdgeCountMax(),
+                             Constants::getGeneratorRadiusMin(),
+                             Constants::getGeneratorRadiusMax(),
+                             Constants::getGeneratorVelocityMin(),
+                             Constants::getGeneratorVelocityMax());
+    asteroidsGenerator_.setFrame(-Constants::getFieldSize() / 2.0f,
+                                 -Constants::getFieldSize() / 2.0f,
+                                  Constants::getFieldSize(),
+                                  Constants::getFieldSize());
     initButtons();
     initShip();
     generateAsteroid();
@@ -30,7 +31,7 @@ void Game::init()
 
 void Game::setupGraphics(const int width, const int height)
 {
-    painter_.setupGraphics(getFieldSize(), width, height);
+    painter_.setupGraphics(Constants::getFieldSize(), width, height);
 }
 
 
@@ -62,18 +63,6 @@ void Game::render()
 }
 
 
-float Game::getFieldSize() const
-{
-    return fieldSize_;
-}
-
-
-void Game::setFieldSize(const float value)
-{
-    fieldSize_ = value;
-}
-
-
 void Game::reset()
 {
     buttons_.clear();
@@ -85,7 +74,7 @@ void Game::reset()
 
     init();
 
-    tmrNewGame_.setAlarm(timeNewGame_);
+    tmrNewGame_.setAlarm(Constants::getTimeNewGame());
 }
 
 
@@ -116,38 +105,43 @@ void Game::touchUp(const int id, const float x, const float y)
 void Game::initButtons()
 {
     buttons_.resize(4);
-    SquareButton& btnLeft_ = buttons_[0];
-    SquareButton& btnRight_ = buttons_[1];
-    SquareButton& btnFire_ = buttons_[2];
-    SquareButton& btnMove_ = buttons_[3];
+    SquareButton& btnLeft_  = buttons_[Constants::getButtonLeftIndex()];
+    SquareButton& btnRight_ = buttons_[Constants::getButtonRightIndex()];
+    SquareButton& btnMove_  = buttons_[Constants::getButtonMoveIndex()];
+    SquareButton& btnFire_  = buttons_[Constants::getButtonFireIndex()];
 
     const float gameWidth = painter_.getGameWidth();
     const float gameHeight = painter_.getGameHeight();
 
-    {
-        const float halfWidth = gameWidth / 2.0f;
-        const float quarterHeight = gameHeight / 4.0f;
+    const float halfWidth = gameWidth / 2.0f;
+    const float quarterHeight = gameHeight / 4.0f;
 
-        btnLeft_.setPosition(-halfWidth, -quarterHeight);
-        btnLeft_.setSize(quarterHeight, quarterHeight);
+    btnLeft_.setPosition(-halfWidth, -quarterHeight);
+    btnLeft_.setSize(quarterHeight, quarterHeight);
+    btnLeft_.setBorder(Constants::getButtonBorder());
 
-        btnRight_.setPosition(-halfWidth + quarterHeight, -2.0f * quarterHeight);
-        btnRight_.setSize(quarterHeight, quarterHeight);
+    btnRight_.setPosition(-halfWidth + quarterHeight, -2.0f * quarterHeight);
+    btnRight_.setSize(quarterHeight, quarterHeight);
+    btnRight_.setBorder(Constants::getButtonBorder());
 
-        btnMove_.setPosition(halfWidth - quarterHeight, -quarterHeight);
-        btnMove_.setSize(quarterHeight, quarterHeight);
+    btnFire_.setPosition(halfWidth - quarterHeight, -quarterHeight);
+    btnFire_.setSize(quarterHeight, quarterHeight);
+    btnFire_.setBorder(Constants::getButtonBorder());
 
-        btnFire_.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
-        btnFire_.setSize(quarterHeight, quarterHeight);
-    }
+    btnMove_.setPosition(halfWidth - 2.0f * quarterHeight, -2.0f * quarterHeight);
+    btnMove_.setSize(quarterHeight, quarterHeight);
+    btnMove_.setBorder(Constants::getButtonBorder());
 }
 
 
 void Game::initShip()
 {
-    ship_.reset();
-    ship_.setFramePositon(-getFieldSize() / 2.0f, -getFieldSize() / 2.0f);
-    ship_.setFrameSize(getFieldSize() / 1.0f, getFieldSize() / 1.0f);
+    ship_.init(Constants::getShipWidth(),
+               Constants::getShipHeight(),
+               Constants::getShipFrictionForce(),
+               Constants::getShipVelocityMax());
+    ship_.setFramePositon(-Constants::getFieldSize() / 2.0f, -Constants::getFieldSize() / 2.0f);
+    ship_.setFrameSize(Constants::getFieldSize(), Constants::getFieldSize());
 }
 
 
@@ -159,7 +153,7 @@ void Game::generateAsteroid()
         asteroids_.resize(index + 1);
         asteroidsGenerator_.generate(asteroids_[index]);
 
-        tmrAsteroidNew_.setAlarm(timeWaitAsteroidNew_);
+        tmrAsteroidNew_.setAlarm(Constants::getTimeWaitAsteroidNew());
     }
 }
 
@@ -180,35 +174,37 @@ void Game::checkTouches()
 
 void Game::shipControl()
 {
-    const float angle = 2.0f;
-    const float speed = 2.0f;
-    const float speedBullet = 5.0f;
+    const float angle = Constants::getShipAngularVelocity();
+    const float speed = Constants::getShipVelocity();
+    const float speedBullet = Constants::getBulletVelocity();
 
-    if (buttons_[0].isPress() && !buttons_[1].isPress()) {
+    if (buttons_[Constants::getButtonLeftIndex()].isPress() && !buttons_[Constants::getButtonRightIndex()].isPress()) {
         ship_.rotate(angle);
     }
-    else if (!buttons_[0].isPress() && buttons_[1].isPress()) {
+    else if (!buttons_[Constants::getButtonLeftIndex()].isPress() && buttons_[Constants::getButtonRightIndex()].isPress()) {
         ship_.rotate(-angle);
     }
     
-    if (buttons_[2].isPress()) {
+    if (buttons_[Constants::getButtonMoveIndex()].isPress()) {
         const Point d = ship_.getDirection();
         ship_.addVelocity(d.x * speed, d.y * speed);
     }
 
-    if (buttons_[3].isPress()) {
+    if (buttons_[Constants::getButtonFireIndex()].isPress()) {
         if (tmrBullet_.isReady()) {
             const Point& startPosition = ship_.getBulletStartPosition();
-            const Point velocity = ship_.getDirection();
+            const Point& shipVelocity = ship_.getVelocity();
+            const Point direction = ship_.getDirection();
 
             const unsigned index = bullets_.size();
             bullets_.resize(index + 1);
             Bullet& bullet = bullets_[index];
+            bullet.init(Constants::getBulletSize());
             bullet.setPosition(startPosition);
-            bullet.setVelocity(velocity.x * speedBullet,
-                               velocity.y * speedBullet);
+            bullet.setVelocity(direction.x * speedBullet + shipVelocity.x,
+                               direction.y * speedBullet + shipVelocity.y);
 
-            tmrBullet_.setAlarm(timeWaitBullet_);
+            tmrBullet_.setAlarm(Constants::getTimeWaitBullet());
         }
     }
     else {
@@ -249,7 +245,7 @@ void Game::checkCollisiions()
 
         for (unsigned i = 0; i < asteroidsCount; ++i) {
             const Point& p = asteroids_[i].getPosition();
-            const float border = getFieldSize() / 2.0f + 2.0f * asteroids_[i].getRadiusMax();
+            const float border = Constants::getFieldSize() / 2.0f + 2.0f * asteroids_[i].getRadiusMax();
             if (p.x < -border || border < p.x || p.y < -border || border < p.y) {
                 asteroids_[i].setDel(true);
             }

@@ -5,21 +5,32 @@
 #include "asteroid.h"
 
 
-AsteroidsGenerator::AsteroidsGenerator(int edgeCountMin,
-                                       int edgeCountMax,
-                                       float radiusMin,
-                                       float radiusMax,
-                                       float velocityMin,
-                                       float velocityMax) :
-    position_({ 0.0f, 0.0f }),
-    size_({ 0.0f, 0.0f }),
-    edgeCountMin_(edgeCountMin),
-    edgeCountMax_(edgeCountMax),
-    radiusMin_(radiusMin),
-    radiusMax_(radiusMax),
-    velocityMin_(velocityMin),
-    velocityMax_(velocityMax)
+AsteroidsGenerator::AsteroidsGenerator() :
+    position_(pointZero),
+    size_(pointZero),
+    edgeCountMin_(0),
+    edgeCountMax_(0),
+    radiusMin_(0.0f),
+    radiusMax_(0.0f),
+    velocityMin_(0.0f),
+    velocityMax_(0.0f)
 {
+}
+
+
+void AsteroidsGenerator::init(const int edgeCountMin,
+                              const int edgeCountMax,
+                              const float radiusMin,
+                              const float radiusMax,
+                              const float velocityMin,
+                              const float velocityMax)
+{
+    edgeCountMin_ = edgeCountMin;
+    edgeCountMax_ = edgeCountMax;
+    radiusMin_ = radiusMin;
+    radiusMax_ = radiusMax;
+    velocityMin_ = velocityMin;
+    velocityMax_ = velocityMax;
 }
 
 
@@ -81,21 +92,13 @@ void AsteroidsGenerator::setFrame(const float positionX,
 }
 
 
-float AsteroidsGenerator::getPosition() const
+void AsteroidsGenerator::getPoints(Point& pointFrom, Point& pointTo) const
 {
-    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
-    return rand() % int(2.0f * halfPerimeter);
-}
+    const float positionFrom = getPosition();
+    const float positionTo = getPosition(positionFrom);
 
-
-float AsteroidsGenerator::getPosition(const float from) const
-{
-    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
-    float res = from + halfPerimeter + (rand() % int(halfPerimeter / 2.0f) - halfPerimeter / 4.0f);
-    while (2.0f * halfPerimeter < res) {
-        res -= 2.0f * halfPerimeter;
-    }
-    return res;
+    setPointAtPosition(pointFrom, positionFrom);
+    setPointAtPosition(pointTo, positionTo);
 }
 
 
@@ -131,11 +134,19 @@ void AsteroidsGenerator::setPointAtPosition(Point& point, const float position) 
 }
 
 
-void AsteroidsGenerator::getPoints(Point& pointFrom, Point& pointTo) const
+float AsteroidsGenerator::getPosition() const
 {
-    const float positionFrom = getPosition();
-    const float positionTo = getPosition(positionFrom);
+    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    return rand() % int(2.0f * halfPerimeter);
+}
 
-    setPointAtPosition(pointFrom, positionFrom);
-    setPointAtPosition(pointTo, positionTo);
+
+float AsteroidsGenerator::getPosition(const float from) const
+{
+    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    float res = from + halfPerimeter + (rand() % int(halfPerimeter / 2.0f) - halfPerimeter / 4.0f);
+    while (2.0f * halfPerimeter < res) {
+        res -= 2.0f * halfPerimeter;
+    }
+    return res;
 }
