@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="CppSource">
+      <UniqueIdentifier>{66f41746-5039-4f3f-bf63-a2ea76a36745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidApk">
+      <UniqueIdentifier>{59ea3ba4-298d-48ae-862d-be4a8cc2664b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AndroidApk\JavaSource">
+      <UniqueIdentifier>{ab0536cf-ea92-4e84-b130-25292ade30e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CppSource\gl_code.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\asteroid.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\ship.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\bullet.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\touches.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\squareButton.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\gameObject.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\asteroidNew.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\painter.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\color.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\game.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\touchManager.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\asteroidsGenerator.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\shipOld.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\timer.cpp">
+      <Filter>CppSource</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AndroidApk\AndroidManifest.xml">
+      <Filter>AndroidApk</Filter>
+    </None>
+    <None Include="AndroidApk\build.xml">
+      <Filter>AndroidApk</Filter>
+    </None>
+    <None Include="AndroidApk\res\values\strings.xml">
+      <Filter>AndroidApk</Filter>
+    </None>
+    <None Include="AndroidApk\project.properties">
+      <Filter>AndroidApk</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsView.java">
+      <Filter>AndroidApk\JavaSource</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsActivity.java">
+      <Filter>AndroidApk\JavaSource</Filter>
+    </None>
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsLib.java">
+      <Filter>AndroidApk\JavaSource</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CppSource\asteroid.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\ship.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\point.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\bullet.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\touches.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\squareButton.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\gameObject.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\asteroidNew.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\painter.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\color.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\game.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\touchManager.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\asteroidsGenerator.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\shipOld.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CppSource\timer.h">
+      <Filter>CppSource</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Android">
+      <Configuration>Release</Configuration>
+      <Platform>Android</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{158CCAFB-7A8D-4532-91DF-99284FCDABEA}</ProjectGuid>
+    <RootNamespace>asteroids</RootNamespace>
+    <ProjectName>Asteroids</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Android'">
+    <AntBuild>
+      <AntBuildPath>$(ProjectDir)\AndroidApk</AntBuildPath>
+      <JVMHeapInitial>1024</JVMHeapInitial>
+      <JVMHeapMaximum>1024</JVMHeapMaximum>
+    </AntBuild>
+    <Link>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Android'">
+    <AntBuild>
+      <AntBuildPath>$(ProjectDir)\AndroidApk</AntBuildPath>
+    </AntBuild>
+    <Link>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CppSource\asteroid.cpp" />
+    <ClCompile Include="CppSource\asteroidNew.cpp" />
+    <ClCompile Include="CppSource\asteroidsGenerator.cpp" />
+    <ClCompile Include="CppSource\bullet.cpp" />
+    <ClCompile Include="CppSource\color.cpp" />
+    <ClCompile Include="CppSource\game.cpp" />
+    <ClCompile Include="CppSource\gameObject.cpp" />
+    <ClCompile Include="CppSource\gl_code.cpp" />
+    <ClCompile Include="CppSource\painter.cpp" />
+    <ClCompile Include="CppSource\ship.cpp" />
+    <ClCompile Include="CppSource\shipOld.cpp" />
+    <ClCompile Include="CppSource\squareButton.cpp" />
+    <ClCompile Include="CppSource\timer.cpp" />
+    <ClCompile Include="CppSource\touches.cpp" />
+    <ClCompile Include="CppSource\touchManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AndroidApk\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="AndroidApk\build.xml" />
+    <None Include="AndroidApk\project.properties" />
+    <None Include="AndroidApk\res\values\strings.xml" />
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsActivity.java" />
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsLib.java" />
+    <None Include="AndroidApk\src\com\android\gl2jni\AsteroidsView.java" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CppSource\asteroid.h" />
+    <ClInclude Include="CppSource\asteroidNew.h" />
+    <ClInclude Include="CppSource\asteroidsGenerator.h" />
+    <ClInclude Include="CppSource\bullet.h" />
+    <ClInclude Include="CppSource\color.h" />
+    <ClInclude Include="CppSource\game.h" />
+    <ClInclude Include="CppSource\gameObject.h" />
+    <ClInclude Include="CppSource\painter.h" />
+    <ClInclude Include="CppSource\point.h" />
+    <ClInclude Include="CppSource\ship.h" />
+    <ClInclude Include="CppSource\shipOld.h" />
+    <ClInclude Include="CppSource\squareButton.h" />
+    <ClInclude Include="CppSource\timer.h" />
+    <ClInclude Include="CppSource\touches.h" />
+    <ClInclude Include="CppSource\touchManager.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
