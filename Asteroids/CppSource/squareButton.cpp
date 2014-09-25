@@ -1,13 +1,13 @@
 #include "squareButton.h"
 
 
-using namespace std;
+using std::vector;
 
 
 SquareButton::SquareButton() :
-  isPress_(false),
-  position_({ 0.0f, 0.0f }),
-  size_({ 0.0f, 0.0f })
+    position_({ 0.0f, 0.0f }),
+    size_({ 0.0f, 0.0f }),
+    isPress_(false)
 {
 }
 
@@ -18,34 +18,16 @@ void SquareButton::setIsPress(const bool value)
 }
 
 
-bool SquareButton::check(const vector<Point>& touches) const
+void SquareButton::setSize(const float x, const float y)
 {
-    bool r = false;
-    const unsigned count = touches.size();
-    for (unsigned i = 0; i < count && !r; ++i) {
-        r = check(touches[i]);
-    }
-    return r;
+    size_.x = x;
+    size_.y = y;
 }
 
 
-bool SquareButton::check(const Point& touch) const
+void SquareButton::setSize(const Point& point)
 {
-    bool r = position_.x < touch.x && touch.x < position_.x + size_.x &&
-             position_.y < touch.y && touch.y < position_.y + size_.y;
-    return r;
-}
-
-
-bool SquareButton::isPress() const
-{
-    return isPress_;
-}
-
-
-void SquareButton::setPosition(const Point& point)
-{
-    setPosition(point.x, point.y);
+    setSize(point.x, point.y);
 }
 
 
@@ -56,26 +38,44 @@ void SquareButton::setPosition(const float x, const float y)
 }
 
 
+void SquareButton::setPosition(const Point& point)
+{
+    setPosition(point.x, point.y);
+}
+
+
+bool SquareButton::isPress() const
+{
+    return isPress_;
+}
+
+
 const Point& SquareButton::getPosition() const
 {
     return position_;
 }
 
 
-void SquareButton::setSize(const Point& point)
-{
-    setSize(point.x, point.y);
-}
-
-
-void SquareButton::setSize(const float x, const float y)
-{
-    size_.x = x;
-    size_.y = y;
-}
-
-
 const Point& SquareButton::getSize() const
 {
     return size_;
+}
+
+
+bool SquareButton::checkTouch(const Point& touch) const
+{
+    const bool r = position_.x < touch.x && touch.x < position_.x + size_.x &&
+                   position_.y < touch.y && touch.y < position_.y + size_.y;
+    return r;
+}
+
+
+bool SquareButton::checkTouches(const vector<Point>& touches) const
+{
+    bool r = false;
+    const unsigned count = touches.size();
+    for (unsigned i = 0; i < count && !r; ++i) {
+        r = checkTouch(touches[i]);
+    }
+    return r;
 }

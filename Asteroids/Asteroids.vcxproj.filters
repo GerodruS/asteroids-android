@@ -42,9 +42,6 @@
     <ClCompile Include="CppSource\ship.cpp">
       <Filter>CppSource\gameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="CppSource\color.cpp">
-      <Filter>CppSource\primitives</Filter>
-    </ClCompile>
     <ClCompile Include="CppSource\painter.cpp">
       <Filter>CppSource\system</Filter>
     </ClCompile>
@@ -59,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="CppSource\asteroid.cpp">
       <Filter>CppSource\gameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="CppSource\point.cpp">
+      <Filter>CppSource\primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

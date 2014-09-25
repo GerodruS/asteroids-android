@@ -1,5 +1,7 @@
 #include "gameObject.h"
 
+#include <math.h>
+
 
 using std::vector;
 

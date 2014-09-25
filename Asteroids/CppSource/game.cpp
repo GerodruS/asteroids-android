@@ -95,7 +95,7 @@ void Game::step()
         const std::vector<Point>& touchesList = touchManager_.getTouches();
         for (unsigned i = 0; i < countButtons; ++i)
         {
-            bool r = buttons_[i].check(touchesList);
+            bool r = buttons_[i].checkTouches(touchesList);
             buttons_[i].setIsPress(r);
         }
     }
