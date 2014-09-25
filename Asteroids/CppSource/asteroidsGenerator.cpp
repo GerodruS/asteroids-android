@@ -2,21 +2,76 @@
 
 #include <stdlib.h>
 
-AsteroidsGenerator::AsteroidsGenerator() :
-    edgeCountMin_(6),
-    edgeCountMax_(12),
-    radiusMin_(25),
-    radiusMax_(75),
-    velocityMin_(0.5f),
-    velocityMax_(3.0f),
+#include "asteroid.h"
+
+
+AsteroidsGenerator::AsteroidsGenerator(int edgeCountMin,
+                                       int edgeCountMax,
+                                       float radiusMin,
+                                       float radiusMax,
+                                       float velocityMin,
+                                       float velocityMax) :
     position_({ 0.0f, 0.0f }),
-    size_({ 0.0f, 0.0f })
+    size_({ 0.0f, 0.0f }),
+    edgeCountMin_(edgeCountMin),
+    edgeCountMax_(edgeCountMax),
+    radiusMin_(radiusMin),
+    radiusMax_(radiusMax),
+    velocityMin_(velocityMin),
+    velocityMax_(velocityMax)
 {
 }
 
 
-void AsteroidsGenerator::setFrame(const float positionX, const float positionY,
-                                  const float sizeX,     const float sizeY)
+void AsteroidsGenerator::generate(Asteroid& asteroid,
+                                  const Point* const position) const
+{
+    Point pointFrom, pointTo;
+    getPoints(pointFrom, pointTo);
+
+    if (position != 0) {
+        asteroid.generate(edgeCountMin_,
+                         edgeCountMax_,
+                         radiusMin_ / 2.0f,
+                         radiusMax_ / 2.0f);
+        pointFrom = *position;
+    }
+    else {
+        asteroid.generate(edgeCountMin_,
+                          edgeCountMax_,
+                          radiusMin_,
+                          radiusMax_);
+    }
+    
+    asteroid.setPosition(pointFrom);
+
+    pointTo.x -= pointFrom.x;
+    pointTo.y -= pointFrom.y;
+
+    const float velocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
+    const float angularVelocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
+
+    if (position != 0) {
+        asteroid.setAngularVelocity(2.0f * angularVelocity);
+        asteroid.setGeneration(2);
+
+        PointFunctions::normalize(pointTo, 2.0f * velocity);
+    }
+    else {
+        asteroid.setAngularVelocity(angularVelocity);
+        asteroid.setGeneration(1);
+
+        PointFunctions::normalize(pointTo, velocity);
+    }
+
+    asteroid.setVelocity(pointTo.x, pointTo.y);
+}
+
+
+void AsteroidsGenerator::setFrame(const float positionX,
+                                  const float positionY,
+                                  const float sizeX,
+                                  const float sizeY)
 {
     position_.x = positionX;
     position_.y = positionY;
@@ -26,74 +81,16 @@ void AsteroidsGenerator::setFrame(const float positionX, const float positionY,
 }
 
 
-void AsteroidsGenerator::generate(Asteroid& asteroid, const Point* const position)
+float AsteroidsGenerator::getPosition() const
 {
-    if (position != 0) {
-        asteroid.generate(edgeCountMin_, edgeCountMax_, radiusMin_ / 2.0f, radiusMax_ / 2.0f);
-    }
-    else {
-        asteroid.generate(edgeCountMin_, edgeCountMax_, radiusMin_, radiusMax_);
-    }
-
-    Point pointFrom, pointTo;
-    getPoints(pointFrom, pointTo);
-
-    if (position != 0) {
-        pointFrom = *position;
-    }
-    
-    asteroid.setPosition(pointFrom);
-
-    pointTo.x -= pointFrom.x;
-    pointTo.y -= pointFrom.y;
-
-    const float velocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
-
-    if (position != 0) {
-        PointFunctions::normalize(pointTo, 2.0f * velocity);
-    }
-    else {
-        PointFunctions::normalize(pointTo, velocity);
-    }
-
-
-    asteroid.setVelocity(pointTo.x, pointTo.y);
-
-    const float angularVelocity = velocityMin_ + rand() % int(velocityMax_ - velocityMin_);
-
-
-    if (position != 0) {
-        asteroid.setAngularVelocity(2.0f * angularVelocity);
-        asteroid.setGeneration(2);
-    }
-    else {
-        asteroid.setAngularVelocity(angularVelocity);
-        asteroid.setGeneration(1);
-    }
-
-}
-
-
-void AsteroidsGenerator::getPoints(Point& pointFrom, Point& pointTo)
-{
-    float positionFrom = getPosition();
-    float positionTo = getPosition(positionFrom);
-
-    setPointAtPosition(pointFrom, positionFrom);
-    setPointAtPosition(pointTo, positionTo);
-}
-
-
-float AsteroidsGenerator::getPosition()
-{
-    float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
     return rand() % int(2.0f * halfPerimeter);
 }
 
 
-float AsteroidsGenerator::getPosition(float from)
+float AsteroidsGenerator::getPosition(const float from) const
 {
-    float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
+    const float halfPerimeter = size_.x + size_.y + 4.0f * radiusMax_;
     float res = from + halfPerimeter + (rand() % int(halfPerimeter / 2.0f) - halfPerimeter / 4.0f);
     while (2.0f * halfPerimeter < res) {
         res -= 2.0f * halfPerimeter;
@@ -103,10 +100,11 @@ float AsteroidsGenerator::getPosition(float from)
 
 
 
-void AsteroidsGenerator::setPointAtPosition(Point& point, float position)
+void AsteroidsGenerator::setPointAtPosition(Point& point, const float position) const
 {
-    float width = size_.x + 2.0f * radiusMax_;
-    float height = size_.y + 2.0f * radiusMax_;
+    const float width = size_.x + 2.0f * radiusMax_;
+    const float height = size_.y + 2.0f * radiusMax_;
+
     if (0.0f <= position && position < height)
     {
         point.x = width;
@@ -130,4 +128,14 @@ void AsteroidsGenerator::setPointAtPosition(Point& point, float position)
 
     point.x += position_.x - radiusMax_;
     point.y += position_.y - radiusMax_;
+}
+
+
+void AsteroidsGenerator::getPoints(Point& pointFrom, Point& pointTo) const
+{
+    const float positionFrom = getPosition();
+    const float positionTo = getPosition(positionFrom);
+
+    setPointAtPosition(pointFrom, positionFrom);
+    setPointAtPosition(pointTo, positionTo);
 }

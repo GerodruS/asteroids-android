@@ -161,16 +161,16 @@ void Game::step()
             {
                 if (asteroids_[i].isCollisionWithBullet(bullets_[j]))
                 {
-                    asteroids_[i].setDel(true);
-                    bullets_[j].setDel(true);
-
                     if (1 == asteroids_[i].getGeneration()) {
-                        const Point& pos = asteroids_[i].getPosition();
                         asteroids_.resize(asteroids_.size() + 2);
+                        const Point& pos = asteroids_[i].getPosition();
 
                         asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 2], &pos);
                         asteroidsGenerator_.generate(asteroids_[asteroids_.size() - 1], &pos);
                     }
+
+                    asteroids_[i].setDel(true);
+                    bullets_[j].setDel(true);
                 }
             }
         }

@@ -4,14 +4,15 @@
 #include <vector>
 #include "point.h"
 
+
 class TouchManager
 {
 public:
     TouchManager();
     
-    void touchDown(int id, float x, float y);
-    void touchMove(int id, float x, float y);
-    void touchUp(int id, float x, float y);
+    void touchDown(const int id, const float x, const float y);
+    void touchMove(const int id, const float x, const float y);
+    void touchUp(const int id, const float x, const float y);
 
     const std::vector<Point>& getTouches() const;
 
